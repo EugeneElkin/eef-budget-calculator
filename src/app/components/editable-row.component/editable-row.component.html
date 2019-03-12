@@ -1,0 +1,8 @@
+<ng-container>
+    <td></td>
+    <td><button [disabled]="disabled">Ed</button></td>
+    <td>{{item.sum}}</td>
+    <td>{{item.aim}}</td>
+    <td><input type="checkbox" [checked]="item.isPaid" (click)="pay(item.id)" [disabled]="disabled" /></td>
+    <td><button class="remove" (click)="remove(item.id)" [disabled]="disabled">Rm</button></td>
+</ng-container>

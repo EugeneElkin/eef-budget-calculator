@@ -1,46 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { EventManagerService } from '../services/event-manager.service';
-import { Subscription } from 'rxjs';
-import { ICalculationItem } from '../interfaces/i-calculation-item';
-import { DataTransferManagerService } from '../services/data-transfer-manager.service';
-import { ICalculation } from '../interfaces/i-calculation';
+import { Component, OnInit } from "@angular/core";
+import { EventManagerService } from "../../services/event-manager.service";
+import { Subscription } from "rxjs";
+import { ICalculationItem } from "../../interfaces/i-calculation-item";
+import { DataTransferManagerService } from "../../services/data-transfer-manager.service";
+import { ICalculation } from "../../interfaces/i-calculation";
 
 @Component({
-    selector: 'app-calculation',
-    template: `
-    <p>Calculation</p>
-    <table class="calculation-table">
-        <thead>
-            <tr>
-                <th><button (click)="enableNewRowMode()">Add</button></th>
-                <th></th>
-                <th>Planned sum</th>
-                <th>Planned aim</th>
-                <th>Paid</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr app-new-row *ngIf="isNewRowMode" class="new-record"></tr>
-            <tr app-editable-row *ngFor="let item of calculation.items" [(item)]="item" [(disabled)]="isNewRowMode" [ngClass]="{'is-paid': item.isPaid}"></tr>
-            <tr>
-                <td>Total</td>
-                <td><button>Ed</button></td>
-                <td colspan="4">{{calculation.items | onlyIfPropFalse:'isPaid' | sumArray:'sum'}}</td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="6">
-                    <div class="flex-container">
-                        <button class="cancel" (click)="clearData()">Cancel</button>
-                        <button (click)="saveCalculation()">Save</button>
-                    </div>
-                </td>
-            </tr>
-        </tfoot>
-    </table>  
-  `
+    selector: "app-calculation",
+    templateUrl: "calculation.component.html"
 })
 
 export class CalculationComponent implements OnInit {
