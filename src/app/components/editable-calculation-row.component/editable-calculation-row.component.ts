@@ -1,13 +1,15 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { EventManagerService } from "../../services/event-manager.service";
 import { ICalculationItem } from "../../interfaces/i-calculation-item";
 import { v4 as uuid } from "uuid";
 
 @Component({
-    selector: "[app-new-row]",
-    templateUrl: "new-row.component.html",
+    selector: "[app-editable-calculation-row]",
+    templateUrl: "editable-calculation-row.component.html",
 })
-export class NewRowComponent implements OnInit {
+export class EditableCalculationRowComponent implements OnInit {
+    @Input() isNewItemMode: boolean = false;
+
     private model: ICalculationItem = {
         id: uuid(),
         sum: null,
@@ -15,17 +17,19 @@ export class NewRowComponent implements OnInit {
         isPaid: false
     };
 
+
     constructor(private eventManager: EventManagerService) { }
 
     ngOnInit() {
+        console.log(this.isNewItemMode);
     }
 
     save(): void {
-        this.eventManager.addNewCalculationItem(this.model);
+        this.eventManager.NotifyThatNewCalculationItemIsReadyToBeAdded(this.model);
     }
 
     cancel(): void {
-        this.eventManager.cancelNewRowAdding();
+        this.eventManager.NotifyThatNewCalculationItemIsReadyToBeCancelled();
     }
 
     isModelValid(): boolean {

@@ -3,10 +3,10 @@ import { ICalculationItem } from "../../interfaces/i-calculation-item";
 import { EventManagerService } from "../../services/event-manager.service";
 
 @Component({
-    selector: "[app-editable-row]",
-    templateUrl: "editable-row.component.html"
+    selector: "[app-calculation-row]",
+    templateUrl: "calculation-row.component.html"
 })
-export class EditableRowComponent implements OnInit {
+export class CalculationRowComponent implements OnInit {
     @Input() item: ICalculationItem;
     @Input() disabled: boolean;
     
@@ -15,11 +15,15 @@ export class EditableRowComponent implements OnInit {
     ngOnInit() {
     }
 
+    private switchToEditMode(id): void {
+        this.eventManager.NotifyThatCalculationItemIsReadyToBeOpenedForEditing(id);
+    }
+
     private remove(id: string): void {
-        this.eventManager.removeCalculationItem(id);
+        this.eventManager.NotifyThatCalculationItemIsReadyToBeRemoved(id);
     }
 
     private pay(id: string): void {
-        this.eventManager.payCalculationItem(id);
+        this.eventManager.NotifyThatCalculationItemIsReadyToBePaid(id);
     }
 }

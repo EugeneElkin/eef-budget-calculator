@@ -8,24 +8,29 @@ import { ICalculationItem } from '../interfaces/i-calculation-item';
 export class EventManagerService {
     constructor() { }
 
-    newRowIsCancelled$ = new Subject();
-    newCalculationItemIsReady$ = new Subject();
-    calculationItemIsWaitingforRemoval$ = new Subject();
+    newCalculationItemIsReadyToBeCancelled$ = new Subject();
+    newCalculationItemIsReadyToBeAdded$ = new Subject();
+    calculationItemIsReadyToBeRemoved$ = new Subject();
     calculationItemIsReadyToBePaid$ = new Subject();
+    calculationItemIsReadyToBeOpenedForEditing$ = new Subject();
 
-    public cancelNewRowAdding(): void {
-        this.newRowIsCancelled$.next();
+    public NotifyThatNewCalculationItemIsReadyToBeCancelled(): void {
+        this.newCalculationItemIsReadyToBeCancelled$.next();
     }
 
-    public addNewCalculationItem(calculationItem: ICalculationItem): void {
-        this.newCalculationItemIsReady$.next(calculationItem);
+    public NotifyThatNewCalculationItemIsReadyToBeAdded(calculationItem: ICalculationItem): void {
+        this.newCalculationItemIsReadyToBeAdded$.next(calculationItem);
     }
 
-    public removeCalculationItem(id: string): void {
-        this.calculationItemIsWaitingforRemoval$.next(id);
+    public NotifyThatCalculationItemIsReadyToBeRemoved(id: string): void {
+        this.calculationItemIsReadyToBeRemoved$.next(id);
     }
 
-    public payCalculationItem(id: string): void {
+    public NotifyThatCalculationItemIsReadyToBePaid(id: string): void {
         this.calculationItemIsReadyToBePaid$.next(id);
+    }
+
+    public NotifyThatCalculationItemIsReadyToBeOpenedForEditing(id: string): void {
+        this.calculationItemIsReadyToBeOpenedForEditing$.next(id);
     }
 }

@@ -3,10 +3,10 @@ import { NgModule } from "@angular/core";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { CalculationComponent } from "./components/calculation.component/calculation.component";
-import { NewRowComponent } from "./components/new-row.component/new-row.component";
+import { EditableCalculationRowComponent } from "./components/editable-calculation-row.component/editable-calculation-row.component";
 import { FormsModule } from "@angular/forms";
 import { SumArrayPipe } from './pipes/sum-array.pipe';
-import { EditableRowComponent } from './components/editable-row.component/editable-row.component';
+import { CalculationRowComponent } from './components/calculation-row.component/calculation-row.component';
 import { OnlyIfPropTruePipe } from './pipes/only-if-prop-true.pipe';
 import { OnlyIfPropFalsePipe } from './pipes/only-if-prop-false.pipe'
 
@@ -14,9 +14,9 @@ import { OnlyIfPropFalsePipe } from './pipes/only-if-prop-false.pipe'
   declarations: [
     AppComponent,
     CalculationComponent,
-    NewRowComponent,
+    EditableCalculationRowComponent,
     SumArrayPipe,
-    EditableRowComponent,
+    CalculationRowComponent,
     OnlyIfPropTruePipe,
     OnlyIfPropFalsePipe
   ],

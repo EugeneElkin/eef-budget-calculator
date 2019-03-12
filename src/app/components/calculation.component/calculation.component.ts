@@ -11,29 +11,31 @@ import { ICalculation } from "../../interfaces/i-calculation";
 })
 
 export class CalculationComponent implements OnInit {
-    private isNewRowMode: boolean = false;
     private subscriptionToCancel: Subscription;
     private subscriptionToAdd: Subscription;
     private subscriptionToRemove: Subscription;
     private subscriptionToPay: Subscription;
+    private subscriptionToOpenEditMode: Subscription;
     private calculation: ICalculation = { items: [] };
+    private isNewRowMode: boolean = false;
     private totalSum: number = 0;
+    private editableItemId: string = null;
 
     constructor(private eventManager: EventManagerService, private dataTransferManager: DataTransferManagerService) {
-        this.subscriptionToCancel = this.eventManager.newRowIsCancelled$.subscribe(
+        this.subscriptionToCancel = this.eventManager.newCalculationItemIsReadyToBeCancelled$.subscribe(
             () => {
                 this.isNewRowMode = false;
             }
         );
 
-        this.subscriptionToAdd = this.eventManager.newCalculationItemIsReady$.subscribe(
+        this.subscriptionToAdd = this.eventManager.newCalculationItemIsReadyToBeAdded$.subscribe(
             (newItem: ICalculationItem) => {
                 this.isNewRowMode = false;
                 this.calculation.items = [...this.calculation.items, newItem];
             }
         );
 
-        this.subscriptionToRemove = this.eventManager.calculationItemIsWaitingforRemoval$.subscribe(
+        this.subscriptionToRemove = this.eventManager.calculationItemIsReadyToBeRemoved$.subscribe(
             (id: string) => {
                 const rmIndex = this.calculation.items.findIndex(x => x.id === id);
                 const newArr = [...this.calculation.items];
@@ -50,6 +52,12 @@ export class CalculationComponent implements OnInit {
                 this.calculation.items = [...newArr]
             }
         );
+
+        this.subscriptionToOpenEditMode = this.eventManager.calculationItemIsReadyToBeOpenedForEditing$.subscribe(
+            (id: string) => {
+                this.editableItemId = id;
+            }
+        );
     }
 
     ngOnInit() {
@@ -62,6 +70,7 @@ export class CalculationComponent implements OnInit {
         this.subscriptionToAdd.unsubscribe();
         this.subscriptionToRemove.unsubscribe();
         this.subscriptionToPay.unsubscribe();
+        this.subscriptionToOpenEditMode.unsubscribe();
     }
 
     private enableNewRowMode(): void {
@@ -79,5 +88,7 @@ export class CalculationComponent implements OnInit {
 
     private clearData() {
         this.calculation = this.dataTransferManager.loadCalculation();
+        this.editableItemId = null;
+        this.isNewRowMode = false;
     }
 }
