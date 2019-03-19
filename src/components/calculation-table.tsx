@@ -9,21 +9,17 @@ export interface ICalculationTableComponentProps {
 }
 export interface ICalculationTableComponentState {
     isNewRowMode: boolean;
+    calculation: ICalculation;
 }
 
 export class CalculationTableComponent extends React.Component<ICalculationTableComponentProps, ICalculationTableComponentState> {
-
-    private calculation: ICalculation = { items: [] };
-
     constructor(props: any) {
         super(props);
 
-        // TODO: make it a Promise and move to componentDidMount
-        this.calculation = DataTransferManagerService.loadCalculation();
-
-        // TODO: convert to Redux state?
+        // TODO: convert to Redux state (partly)?
         this.state = {
-            isNewRowMode: false
+            isNewRowMode: false,
+            calculation: { items: [] }
         }
 
         this.handleAddNewRowClick = this.handleAddNewRowClick.bind(this);
@@ -31,6 +27,11 @@ export class CalculationTableComponent extends React.Component<ICalculationTable
     }
 
     componentDidMount() {
+        DataTransferManagerService.loadCalculation().then((result) => {
+            this.setState((state, props) => ({
+                calculation: result
+            }));
+        });
     }
 
     handleAddNewRowClick(e: SyntheticEvent): void {
@@ -62,7 +63,7 @@ export class CalculationTableComponent extends React.Component<ICalculationTable
                     </thead>
                     <tbody>
                         {this.state.isNewRowMode && <CalculationNewRowComponent handleCancelNewRowClick={this.handleCancelNewRowClick} />}
-                        {this.calculation.items.map((item) =>
+                        {this.state.calculation.items.map((item) =>
                             <CalculationRowComponent key={item.id.toString()} item={item} />
                         )}
                         <tr>
