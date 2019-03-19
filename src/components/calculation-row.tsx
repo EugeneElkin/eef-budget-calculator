@@ -1,11 +1,11 @@
 import * as React from "react";
 import { ICalculationItem } from "../interfaces/i-calculation-item";
 
-export interface ICalculationRowComponent {
+export interface ICalculationRowComponentProps {
     item: ICalculationItem
 }
 
-export class CalculationRowComponent extends React.Component<ICalculationRowComponent> {
+export class CalculationRowComponent extends React.Component<ICalculationRowComponentProps> {
     constructor(props: any) {
         super(props);
 

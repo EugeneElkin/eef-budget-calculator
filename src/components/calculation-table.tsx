@@ -2,35 +2,57 @@ import * as React from "react";
 import { ICalculation } from "../interfaces/i-calculation";
 import { DataTransferManagerService } from "../services/data-transfer-manager-service";
 import { CalculationRowComponent } from "./calculation-row";
+import { CalculationNewRowComponent } from "./calculation-new-row";
+import { SyntheticEvent } from "react";
 
-export interface ICalculationTableComponent {
+export interface ICalculationTableComponentProps {
+}
+export interface ICalculationTableComponentState {
+    isNewRowMode: boolean;
 }
 
-export class CalculationTableComponent extends React.Component<ICalculationTableComponent> {
+export class CalculationTableComponent extends React.Component<ICalculationTableComponentProps, ICalculationTableComponentState> {
 
-    private calculation: ICalculation = { items: []};
+    private calculation: ICalculation = { items: [] };
 
     constructor(props: any) {
         super(props);
+
+        // TODO: make it a Promise and move to componentDidMount
         this.calculation = DataTransferManagerService.loadCalculation();
+
+        // TODO: convert to Redux state?
+        this.state = {
+            isNewRowMode: false
+        }
+
+        this.handleAddNewRowClick = this.handleAddNewRowClick.bind(this);
+        this.handleCancelNewRowClick = this.handleCancelNewRowClick.bind(this);
     }
 
     componentDidMount() {
     }
 
-    render() {
-        console.log(this.calculation);
-        const rows = this.calculation.items.map((item) =>
-            <CalculationRowComponent key={item.id.toString()} item={item} />
-        );
+    handleAddNewRowClick(e: SyntheticEvent): void {
+        this.setState((state, props) => ({
+            isNewRowMode: true
+        }));
+    }
 
+    handleCancelNewRowClick(e: SyntheticEvent): void {
+        this.setState((state, props) => ({
+            isNewRowMode: false
+        }));
+    }
+
+    render() {
         return (
             <React.Fragment>
                 <p>Calculation</p>
                 <table className="calculation-table">
                     <thead>
                         <tr>
-                            <th><button>Add</button></th>
+                            <th><button onClick={this.handleAddNewRowClick}>Add</button></th>
                             <th></th>
                             <th>Planned sum</th>
                             <th>Planned aim</th>
@@ -39,7 +61,10 @@ export class CalculationTableComponent extends React.Component<ICalculationTable
                         </tr>
                     </thead>
                     <tbody>
-                        {rows}
+                        {this.state.isNewRowMode && <CalculationNewRowComponent handleCancelNewRowClick={this.handleCancelNewRowClick} />}
+                        {this.calculation.items.map((item) =>
+                            <CalculationRowComponent key={item.id.toString()} item={item} />
+                        )}
                         <tr>
                             <td>Total</td>
                             <td></td>
