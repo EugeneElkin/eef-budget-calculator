@@ -32,7 +32,7 @@ input[type=text] {
 input[type=text]:focus {
     border: 2px solid #555;
 }
-input[type=text].ng-invalid:not(form) {
+input[type=text].invalid {
     border-left: 5px solid #a94442; /* red */
 }
 input[type=text].ng-valid[required], input[type=text].ng-valid.required { 
