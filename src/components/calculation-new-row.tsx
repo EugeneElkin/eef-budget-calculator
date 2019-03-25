@@ -1,11 +1,12 @@
 import React = require("react");
 import { CancelButtonComponent } from "./reusable/cancel-button";
 import { ValidationUtilsService } from "../services/validation-utils-service";
+import { IValueDescriptor } from "../interfaces/i-value-descriptor";
 
 export interface ICalculationNewRowComponentState {
     isValid: boolean;
-    plannedSum?: string;
-    plannedAim?: string;
+    plannedSum: IValueDescriptor<string>;
+    plannedAim: IValueDescriptor<string>;
 }
 
 export interface ICalculationNewRowComponentProps {
@@ -17,7 +18,13 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
         super(props);
 
         this.state = {
-            isValid: false
+            isValid: false,
+            plannedSum: {
+                isValid: false
+            },
+            plannedAim: {
+                isValid: false
+            }
         }
 
         this.handleSumWasChanged = this.handleSumWasChanged.bind(this);
@@ -27,10 +34,8 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
         const value: string = event.currentTarget.value;
 
         this.setState((state, props) => ({
-            plannedSum: ValidationUtilsService.validateMoneyFormat(value, state.plannedSum)
-        }), () => {
-            console.log(this.state.plannedSum);
-        });
+            plannedSum: ValidationUtilsService.validateMoneyFormat(value, state.plannedSum.value, true)
+        }));
     }
 
     render() {
@@ -38,8 +43,14 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
             <tr>
                 <td></td>
                 <td><CancelButtonComponent handleClick={this.props.handleCancelNewRowClick} /></td>
-                <td><input itemType={"text"} placeholder="0,00" value={this.state.plannedSum} onChange={this.handleSumWasChanged} /></td>
-                <td><input itemType={"text"} value={this.state.plannedAim} /></td>
+                <td><input
+                    type={"text"}
+                    placeholder="0,00"
+                    value={this.state.plannedSum.value}
+                    onChange={this.handleSumWasChanged}
+                    className={this.state.plannedSum.isValid ? "valid" : "invalid"}
+                /></td>
+                <td><input itemType={"text"} value={this.state.plannedAim.value} /></td>
                 <td></td>
                 <td><button disabled={!this.state.isValid}>Ok</button></td>
             </tr>

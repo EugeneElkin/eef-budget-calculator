@@ -35,7 +35,7 @@ input[type=text]:focus {
 input[type=text].invalid {
     border-left: 5px solid #a94442; /* red */
 }
-input[type=text].ng-valid[required], input[type=text].ng-valid.required { 
+input[type=text].valid { 
     border-left: 5px solid #42A948; /* green */ 
 }
 
