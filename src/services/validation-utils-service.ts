@@ -3,6 +3,22 @@ import { IValueDescriptor } from "../interfaces/i-value-descriptor";
 export class ValidationUtilsService {
     constructor() { }
 
+
+    public static validateRequired<T>(checkingValue: T): IValueDescriptor<T> {
+        let isvalid: boolean = true;
+
+        if ((typeof checkingValue === "string" && this.hasWhiteSpacesOnlyOrEmpty(<string>checkingValue))
+            || typeof checkingValue === "undefined"
+            || checkingValue === null) {
+            isvalid = false;
+        }
+
+        return {
+            value: checkingValue,
+            isValid: isvalid
+        }
+    }
+
     /**
      * Function validate {@link checkingValue} on number formats [0] or [0,00] for controlled textboxes.
      * If {@link checkingValue} is valid it will be returned back with valid state.
@@ -40,7 +56,7 @@ export class ValidationUtilsService {
      * @param previousValidValue 
      * @param isRequired the sign that says that emty input is forbidden
      */
-    public static handleInvalidNumericValueForTextbox(
+    private static handleInvalidNumericValueForTextbox(
         invalidValue: string,
         previousValidValue?: string,
         isRequired?: boolean): IValueDescriptor<string> {
@@ -62,5 +78,9 @@ export class ValidationUtilsService {
             value: previousValidValue,
             isValid: true
         }
+    }
+
+    private static hasWhiteSpacesOnlyOrEmpty(str: string): boolean {
+        return /^\s{1,}$/g.test(str) || str === "";
     }
 }

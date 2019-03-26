@@ -14,6 +14,8 @@ export interface ICalculationNewRowComponentProps {
 }
 
 export class CalculationNewRowComponent extends React.Component<ICalculationNewRowComponentProps, ICalculationNewRowComponentState> {
+    private isRequired: boolean = true;
+
     constructor(props: any) {
         super(props);
 
@@ -28,13 +30,39 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
         }
 
         this.handleSumWasChanged = this.handleSumWasChanged.bind(this);
+        this.handleAimWasChanged = this.handleAimWasChanged.bind(this);
+        this.handleFieldOnBlur = this.handleFieldOnBlur.bind(this);
     }
 
     handleSumWasChanged(event: React.ChangeEvent<HTMLInputElement>): void {
         const value: string = event.currentTarget.value;
 
         this.setState((state, props) => ({
-            plannedSum: ValidationUtilsService.validateMoneyFormat(value, state.plannedSum.value, true)
+            plannedSum: ValidationUtilsService.validateMoneyFormat(value, state.plannedSum.value, this.isRequired),
+            isValid: this.checkTotalValidation(state)
+        }), () => {
+            this.setState((state, props) => ({
+                isValid: this.checkTotalValidation(state)
+            }));
+        });
+    }
+
+    handleAimWasChanged(event: React.ChangeEvent<HTMLInputElement>): void {
+        const value: string = event.currentTarget.value;
+
+        this.setState((state, props) => ({
+            plannedAim: ValidationUtilsService.validateRequired(value),
+            isValid: this.checkTotalValidation(state)
+        }), () => {
+            this.setState((state, props) => ({
+                isValid: this.checkTotalValidation(state)
+            }));
+        });
+    }
+
+    handleFieldOnBlur(): void {
+        this.setState((state, props) => ({
+            isValid: this.checkTotalValidation(state)
         }));
     }
 
@@ -48,12 +76,25 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
                     placeholder="0,00"
                     value={this.state.plannedSum.value}
                     onChange={this.handleSumWasChanged}
+                    onBlur={this.handleFieldOnBlur}
                     className={this.state.plannedSum.isValid ? "valid" : "invalid"}
                 /></td>
-                <td><input itemType={"text"} value={this.state.plannedAim.value} /></td>
+                <td><input
+                    type={"text"}
+                    value={this.state.plannedAim.value}
+                    onChange={this.handleAimWasChanged}
+                    onBlur={this.handleFieldOnBlur}
+                    className={this.state.plannedAim.isValid ? "valid" : "invalid"} /></td>
                 <td></td>
                 <td><button disabled={!this.state.isValid}>Ok</button></td>
             </tr>
         );
+    }
+
+    private checkTotalValidation(state: ICalculationNewRowComponentState) {
+        if (state.plannedSum.isValid && state.plannedAim.isValid) {
+            return true;
+        }
+        return false;
     }
 }
