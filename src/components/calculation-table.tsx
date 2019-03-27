@@ -12,9 +12,12 @@ export interface ICalculationTableComponentState {
     isNewRowMode: boolean;
     calculation: ICalculation;
     originalCalculation: ICalculation;
+    activeRowId?: string;
 }
 
 export class CalculationTableComponent extends React.Component<ICalculationTableComponentProps, ICalculationTableComponentState> {
+    totalPlannedExpenses: number = 0;
+
     constructor(props: any) {
         super(props);
 
@@ -28,10 +31,12 @@ export class CalculationTableComponent extends React.Component<ICalculationTable
         this.handleAddNewRowClick = this.handleAddNewRowClick.bind(this);
         this.handleCancelNewRowClick = this.handleCancelNewRowClick.bind(this);
         this.handleCancelChangesClick = this.handleCancelChangesClick.bind(this);
+        this.handleSaveNewRowClick = this.handleSaveNewRowClick.bind(this);
+        this.handleSaveCalculation = this.handleSaveCalculation.bind(this);
     }
 
     private cloneCalculation(calculation: ICalculation): ICalculation {
-        let clonnedCalculation = {...calculation};
+        let clonnedCalculation = { ...calculation };
         clonnedCalculation.items = this.cloneCalculationItems(calculation.items)
         return clonnedCalculation;
     }
@@ -39,7 +44,7 @@ export class CalculationTableComponent extends React.Component<ICalculationTable
     private cloneCalculationItems(items: ICalculationItem[]) {
         let clonnedItems: ICalculationItem[] = []
         for (let i = 0; i < items.length; i++) {
-            clonnedItems.push({...items[i]});
+            clonnedItems.push({ ...items[i] });
         }
         return clonnedItems;
     }
@@ -93,7 +98,7 @@ export class CalculationTableComponent extends React.Component<ICalculationTable
             newArr[itemIndex].isPaid = !newArr[itemIndex].isPaid;
             return newArr;
         }
-        
+
         this.setState((state, props) => ({
             calculation: {
                 items: fn(state)
@@ -101,7 +106,41 @@ export class CalculationTableComponent extends React.Component<ICalculationTable
         }));
     }
 
+    handleSaveNewRowClick(item: ICalculationItem): void {
+        const fn = (st: ICalculationTableComponentState) => {
+            const newArr = this.cloneCalculationItems(st.calculation.items);
+            newArr.push(item);
+            return newArr;
+        }
+
+        this.setState((state, props) => ({
+            calculation: {
+                items: fn(state)
+            },
+            isNewRowMode: false
+        }));
+    }
+
+    handleSaveCalculation(): void {
+        DataTransferManagerService.saveCalculation(this.state.calculation).then(() => {
+            this.setState((state, props) => ({
+                originalCalculation: this.cloneCalculation(this.state.calculation)
+            }));
+        });
+    }
+
+    handleCalculationRowClick(id: string): void {
+        this.setState((state, props) => ({
+            activeRowId: id
+        }));
+    }
+
     render() {
+        this.totalPlannedExpenses = this.state.calculation.items
+            .filter(x => !x.isPaid)
+            .map(x => x.sum)
+            .reduce((a: number, b: number) => +a + +b, 0);
+
         return (
             <React.Fragment>
                 <p>Calculation</p>
@@ -118,19 +157,23 @@ export class CalculationTableComponent extends React.Component<ICalculationTable
                     </thead>
                     <tbody>
                         {this.state.isNewRowMode &&
-                            <CalculationNewRowComponent handleCancelNewRowClick={this.handleCancelNewRowClick} />
+                            <CalculationNewRowComponent
+                                handleCancelNewRowClick={this.handleCancelNewRowClick}
+                                handleSaveNewRowClick={this.handleSaveNewRowClick} />
                         }
                         {this.state.calculation.items.map((item) =>
                             <CalculationRowComponent
                                 key={item.id.toString()}
                                 item={item}
                                 handleRemoveRowClick={this.handleRemoveRowClick.bind(this, item.id)}
-                                handleSwitchPaymentStatusClick={this.handleSwitchPaymentStatus.bind(this, item.id)} />
+                                handleSwitchPaymentStatusClick={this.handleSwitchPaymentStatus.bind(this, item.id)}
+                                isActive={this.state.activeRowId === item.id}
+                                handleElementClick={this.handleCalculationRowClick.bind(this, item.id)} />
                         )}
                         <tr>
                             <td>Total</td>
                             <td></td>
-                            <td colSpan={4}></td>
+                            <td colSpan={4}>{this.totalPlannedExpenses}</td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -138,7 +181,7 @@ export class CalculationTableComponent extends React.Component<ICalculationTable
                             <td colSpan={6}>
                                 <div className="flex-container">
                                     <CancelButtonComponent handleClick={this.handleCancelChangesClick} />
-                                    <button >Save</button>
+                                    <button onClick={this.handleSaveCalculation}>Save</button>
                                 </div>
                             </td>
                         </tr>

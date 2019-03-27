@@ -52,6 +52,9 @@ table tr.is-paid td {
     text-decoration-line: line-through;
     background-color: #add8af;
 }
+table tr.is-active td {
+    background-color: #e6d87d;
+}
 
 .flex-container {
     display: flex;

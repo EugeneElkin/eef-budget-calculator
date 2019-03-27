@@ -5,8 +5,11 @@ export class DataTransferManagerService {
 
     constructor() { }
 
-    public static saveCalculation(calculation: ICalculation): void {
-        localStorage.setItem(this.calculationKey, JSON.stringify(calculation));
+    public static saveCalculation(calculation: ICalculation): Promise<void> {
+        return new Promise((resolve, reject) => {
+            localStorage.setItem(this.calculationKey, JSON.stringify(calculation));
+            resolve();
+        });
     }
 
     public static loadCalculation(): Promise<ICalculation> {

@@ -2,6 +2,8 @@ import React = require("react");
 import { CancelButtonComponent } from "./reusable/cancel-button";
 import { ValidationUtilsService } from "../services/validation-utils-service";
 import { IValueDescriptor } from "../interfaces/i-value-descriptor";
+import { ICalculationItem } from "../interfaces/i-calculation-item";
+import { v4 as uuid } from "uuid";
 
 export interface ICalculationNewRowComponentState {
     isValid: boolean;
@@ -11,6 +13,7 @@ export interface ICalculationNewRowComponentState {
 
 export interface ICalculationNewRowComponentProps {
     handleCancelNewRowClick: () => void;
+    handleSaveNewRowClick: (item: ICalculationItem) => void;
 }
 
 export class CalculationNewRowComponent extends React.Component<ICalculationNewRowComponentProps, ICalculationNewRowComponentState> {
@@ -86,7 +89,7 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
                     onBlur={this.handleFieldOnBlur}
                     className={this.state.plannedAim.isValid ? "valid" : "invalid"} /></td>
                 <td></td>
-                <td><button disabled={!this.state.isValid}>Ok</button></td>
+                <td><button disabled={!this.state.isValid} onClick={() => this.props.handleSaveNewRowClick(this.buildCalculationItem())}>Ok</button></td>
             </tr>
         );
     }
@@ -96,5 +99,15 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
             return true;
         }
         return false;
+    }
+
+    private buildCalculationItem(): ICalculationItem {
+        const sum: number = parseFloat(this.state.plannedSum.value as string);
+        return {
+            id: uuid(),
+            sum: isNaN(sum) ? 0 : sum,
+            aim: this.state.plannedAim.value as string,
+            isPaid: false
+        }
     }
 }
