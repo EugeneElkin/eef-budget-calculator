@@ -1,22 +1,19 @@
 import { IValueDescriptor } from "../interfaces/i-value-descriptor";
 
 export class ValidationUtilsService {
-    constructor() { }
-
-
     public static validateRequired<T>(checkingValue: T): IValueDescriptor<T> {
         let isvalid: boolean = true;
 
-        if ((typeof checkingValue === "string" && this.hasWhiteSpacesOnlyOrEmpty(<string>checkingValue))
+        if ((typeof checkingValue === "string" && this.hasWhiteSpacesOnlyOrEmpty(checkingValue as string))
             || typeof checkingValue === "undefined"
             || checkingValue === null) {
             isvalid = false;
         }
 
         return {
+            isValid: isvalid,
             value: checkingValue,
-            isValid: isvalid
-        }
+        };
     }
 
     /**
@@ -34,13 +31,13 @@ export class ValidationUtilsService {
 
         const moneyRegexp: RegExp = /^[\d]{1,20}(\.){0,1}[\d]{0,2}$/;
 
-        let isValid: boolean = checkingValue.search(moneyRegexp) >= 0;
+        const isValid: boolean = checkingValue.search(moneyRegexp) >= 0;
 
         if (isValid) {
             return {
+                isValid: true,
                 value: checkingValue,
-                isValid: true
-            }
+            };
         }
 
         return this.handleInvalidNumericValueForTextbox(checkingValue, previousValidValue, isRequired);
@@ -48,12 +45,12 @@ export class ValidationUtilsService {
 
     /**
      * Function decides what to return instead of invalid value to prevent incorrect input in textbox with money format.
-     * If {@link invalidValue} is empty it means that input was cleaned and it is kind of valid case for textbox  
+     * If {@link invalidValue} is empty it means that input was cleaned and it is kind of valid case for textbox
      * Other cases ignore {@link invalidValue} but returns different results depends on {@link previousValidValue}
      * If {@link previousValidValue} is undefined it means that there wasn't any correct input
      * and {@link previousValidValue} cannot be just returned so "0" will be returned instead.
-     * @param invalidValue 
-     * @param previousValidValue 
+     * @param invalidValue
+     * @param previousValidValue
      * @param isRequired the sign that says that emty input is forbidden
      */
     private static handleInvalidNumericValueForTextbox(
@@ -63,21 +60,21 @@ export class ValidationUtilsService {
 
         if (invalidValue === "") {
             return {
-                isValid: isRequired ? false : true
+                isValid: isRequired ? false : true,
             };
         }
 
         if (typeof previousValidValue === "undefined") {
             return {
+                isValid: true,
                 value: "0",
-                isValid: true
-            }
+            };
         }
 
         return {
+            isValid: true,
             value: previousValidValue,
-            isValid: true
-        }
+        };
     }
 
     private static hasWhiteSpacesOnlyOrEmpty(str: string): boolean {

@@ -1,10 +1,6 @@
 import { ICalculation } from "../interfaces/i-calculation";
 
 export class DataTransferManagerService {
-    private static calculationKey: string = "calculation";
-
-    constructor() { }
-
     public static saveCalculation(calculation: ICalculation): Promise<void> {
         return new Promise((resolve, reject) => {
             localStorage.setItem(this.calculationKey, JSON.stringify(calculation));
@@ -17,7 +13,7 @@ export class DataTransferManagerService {
             let storedCalculation: ICalculation = { items: [] };
 
             try {
-                const calculation: string | null = localStorage.getItem(this.calculationKey)
+                const calculation: string | null = localStorage.getItem(this.calculationKey);
                 if (calculation !== null) {
                     storedCalculation = JSON.parse(calculation);
                 }
@@ -29,4 +25,6 @@ export class DataTransferManagerService {
             resolve(storedCalculation);
         });
     }
+
+    private static calculationKey: string = "calculation";
 }

@@ -4,11 +4,9 @@ import { ButtonComponent } from "./basic/button";
 export interface ICancelButtonComponentComponentProps {
     handleClick: () => void;
 }
-export interface ICancelButtonComponentComponentState {
-}
 
-export class CancelButtonComponent extends React.Component<ICancelButtonComponentComponentProps, ICancelButtonComponentComponentState> {
-    render() {
+export class CancelButtonComponent extends React.Component<ICancelButtonComponentComponentProps, {}> {
+    public render() {
         return (
             <ButtonComponent className={"cancel"} handleClick={this.props.handleClick}>Cancel</ButtonComponent>
         );

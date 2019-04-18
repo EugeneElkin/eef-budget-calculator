@@ -1,7 +1,7 @@
-import { AppProps } from "./appProps";
-import { AuthProps } from "./authProps";
+import { IAppProps } from "./appProps";
+import { IAuthProps } from "./authProps";
 
 export interface ICombinedReducersEntries {
-    authReducer: AuthProps;
-    appReducer: AppProps;
+    authReducer: IAuthProps;
+    appReducer: IAppProps;
 }

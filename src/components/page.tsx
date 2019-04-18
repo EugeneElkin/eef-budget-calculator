@@ -1,14 +1,14 @@
 import * as React from "react";
 import { CalculationTableComponent } from "./calculation-table";
+import { DetailsFormComponent } from "./details-form";
 
-export interface IPageComponentDescriptor {
-    
-}
-
-export class PageComponent extends React.Component<IPageComponentDescriptor> {
-    render() {
+export class PageComponent extends React.Component<{}> {
+    public render() {
         return (
-            <CalculationTableComponent />
-        )
+            <React.Fragment>
+                <CalculationTableComponent />
+                <DetailsFormComponent />
+            </React.Fragment>
+        );
     }
 }

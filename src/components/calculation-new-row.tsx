@@ -1,10 +1,11 @@
-import React = require("react");
-import { CancelButtonComponent } from "./reusable/cancel-button";
-import { ValidationUtilsService } from "../services/validation-utils-service";
-import { IValueDescriptor } from "../interfaces/i-value-descriptor";
-import { ICalculationItem } from "../interfaces/i-calculation-item";
 import { v4 as uuid } from "uuid";
 
+import { ICalculationItem } from "../interfaces/i-calculation-item";
+import { IValueDescriptor } from "../interfaces/i-value-descriptor";
+import { ValidationUtilsService } from "../services/validation-utils-service";
+import { CancelButtonComponent } from "./reusable/cancel-button";
+
+import React = require("react");
 export interface ICalculationNewRowComponentState {
     isValid: boolean;
     plannedSum: IValueDescriptor<string>;
@@ -24,52 +25,20 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
 
         this.state = {
             isValid: false,
-            plannedSum: {
-                isValid: false
-            },
             plannedAim: {
-                isValid: false
-            }
-        }
+                isValid: false,
+            },
+            plannedSum: {
+                isValid: false,
+            },
+        };
 
         this.handleSumWasChanged = this.handleSumWasChanged.bind(this);
         this.handleAimWasChanged = this.handleAimWasChanged.bind(this);
         this.handleFieldOnBlur = this.handleFieldOnBlur.bind(this);
     }
 
-    handleSumWasChanged(event: React.ChangeEvent<HTMLInputElement>): void {
-        const value: string = event.currentTarget.value;
-
-        this.setState((state, props) => ({
-            plannedSum: ValidationUtilsService.validateMoneyFormat(value, state.plannedSum.value, this.isRequired),
-            isValid: this.checkTotalValidation(state)
-        }), () => {
-            this.setState((state, props) => ({
-                isValid: this.checkTotalValidation(state)
-            }));
-        });
-    }
-
-    handleAimWasChanged(event: React.ChangeEvent<HTMLInputElement>): void {
-        const value: string = event.currentTarget.value;
-
-        this.setState((state, props) => ({
-            plannedAim: ValidationUtilsService.validateRequired(value),
-            isValid: this.checkTotalValidation(state)
-        }), () => {
-            this.setState((state, props) => ({
-                isValid: this.checkTotalValidation(state)
-            }));
-        });
-    }
-
-    handleFieldOnBlur(): void {
-        this.setState((state, props) => ({
-            isValid: this.checkTotalValidation(state)
-        }));
-    }
-
-    render() {
+    public render() {
         return (
             <tr>
                 <td></td>
@@ -89,9 +58,44 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
                     onBlur={this.handleFieldOnBlur}
                     className={this.state.plannedAim.isValid ? "valid" : "invalid"} /></td>
                 <td></td>
-                <td><button disabled={!this.state.isValid} onClick={() => this.props.handleSaveNewRowClick(this.buildCalculationItem())}>Ok</button></td>
+                <td><button
+                    disabled={!this.state.isValid}
+                    onClick={() => this.props.handleSaveNewRowClick(this.buildCalculationItem())}
+                >Ok</button></td>
             </tr>
         );
+    }
+
+    private handleSumWasChanged(event: React.ChangeEvent<HTMLInputElement>): void {
+        const value: string = event.currentTarget.value;
+
+        this.setState((state, props) => ({
+            isValid: this.checkTotalValidation(state),
+            plannedSum: ValidationUtilsService.validateMoneyFormat(value, state.plannedSum.value, this.isRequired),
+        }), () => {
+            this.setState((state, props) => ({
+                isValid: this.checkTotalValidation(state),
+            }));
+        });
+    }
+
+    private handleAimWasChanged(event: React.ChangeEvent<HTMLInputElement>): void {
+        const value: string = event.currentTarget.value;
+
+        this.setState((state, props) => ({
+            isValid: this.checkTotalValidation(state),
+            plannedAim: ValidationUtilsService.validateRequired(value),
+        }), () => {
+            this.setState((state, props) => ({
+                isValid: this.checkTotalValidation(state),
+            }));
+        });
+    }
+
+    private handleFieldOnBlur(): void {
+        this.setState((state, props) => ({
+            isValid: this.checkTotalValidation(state),
+        }));
     }
 
     private checkTotalValidation(state: ICalculationNewRowComponentState) {
@@ -104,10 +108,10 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
     private buildCalculationItem(): ICalculationItem {
         const sum: number = parseFloat(this.state.plannedSum.value as string);
         return {
-            id: uuid(),
-            sum: isNaN(sum) ? 0 : sum,
             aim: this.state.plannedAim.value as string,
-            isPaid: false
-        }
+            id: uuid(),
+            isPaid: false,
+            sum: isNaN(sum) ? 0 : sum,
+        };
     }
 }

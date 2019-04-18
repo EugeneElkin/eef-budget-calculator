@@ -1,9 +1,9 @@
 import * as React from "react";
+
 import { ICalculationItem } from "../interfaces/i-calculation-item";
-import { SyntheticEvent } from "react";
 
 export interface ICalculationRowComponentProps {
-    item: ICalculationItem,
+    item: ICalculationItem;
     handleRemoveRowClick: () => void;
     handleSwitchPaymentStatusClick: () => void;
     handleElementClick?: () => void;
@@ -15,8 +15,8 @@ export class CalculationRowComponent extends React.Component<ICalculationRowComp
         super(props);
     }
 
-    render() {
-        let classNames: string[] = [];
+    public render() {
+        const classNames: string[] = [];
 
         if (this.props.item.isPaid) {
             classNames.push("is-paid");

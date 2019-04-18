@@ -1,3 +1,3 @@
-export type AppProps = {
+export interface IAppProps {
     isLoginActive?: boolean | null;
 }

@@ -1,3 +1,3 @@
-export type AuthProps = {
-    isAuthenticated: boolean
+export interface IAuthProps {
+    isAuthenticated: boolean;
 }
