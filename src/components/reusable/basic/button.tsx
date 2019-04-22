@@ -1,7 +1,7 @@
 import * as React from "react";
 
 export interface IButtonComponentComponentProps {
-    handleClick?: () => void;
+    handleClick?: (param?: any) => void;
     className?: string;
 }
 

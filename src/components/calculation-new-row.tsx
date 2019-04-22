@@ -2,7 +2,7 @@ import { v4 as uuid } from "uuid";
 
 import { ICalculationItem } from "../interfaces/i-calculation-item";
 import { IValueDescriptor } from "../interfaces/i-value-descriptor";
-import { ValidationUtilsService } from "../services/validation-utils-service";
+import { ValidationService } from "../services/validation-service";
 import { CancelButtonComponent } from "./reusable/cancel-button";
 
 import React = require("react");
@@ -71,7 +71,7 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
 
         this.setState((state, props) => ({
             isValid: this.checkTotalValidation(state),
-            plannedSum: ValidationUtilsService.validateMoneyFormat(value, state.plannedSum.value, this.isRequired),
+            plannedSum: ValidationService.validateMoneyFormat(value, state.plannedSum.value, this.isRequired),
         }), () => {
             this.setState((state, props) => ({
                 isValid: this.checkTotalValidation(state),
@@ -84,7 +84,7 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
 
         this.setState((state, props) => ({
             isValid: this.checkTotalValidation(state),
-            plannedAim: ValidationUtilsService.validateRequired(value),
+            plannedAim: ValidationService.validateRequired(value),
         }), () => {
             this.setState((state, props) => ({
                 isValid: this.checkTotalValidation(state),

@@ -1,16 +1,16 @@
 import * as React from "react";
+import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
 
 import { ICalculation } from "../interfaces/i-calculation";
 import { ICalculationItem } from "../interfaces/i-calculation-item";
-import { DataTransferManagerService } from "../services/data-transfer-manager-service";
+import { DataTransferService } from "../services/data-transfer-service";
+import { AppActions } from "../state/actions";
+import { ICombinedReducersEntries } from "../state/reducers";
 import { CalculationNewRowComponent } from "./calculation-new-row";
 import { CalculationRowComponent } from "./calculation-row";
 import { CancelButtonComponent } from "./reusable/cancel-button";
 import { SaveButtonComponent } from "./reusable/save-button";
-import { connect } from "react-redux";
-import { Dispatch, Action } from "redux";
-import { AppActions } from "../state/actions";
-import { ICombinedReducersEntries } from "../state/reducers";
 
 export interface ICalculationTableComponentState {
     activeRowId?: string;
@@ -32,7 +32,10 @@ interface ICalculationComponentHandlersWrapper {
 interface ICalculationComponentHandlers {
     clickAddNewRow: () => void;
     clickCancelNewRow: () => void;
+    clickCancelCalculationChanges: () => void;
+    clickSaveCalculation: (calculation: ICalculation) => void;
     clickSaveNewRow: (item: ICalculationItem) => void;
+    clickRemoveRow: (id: string) => void;
     saveCalculation: (item: ICalculation) => void;
 }
 
@@ -43,13 +46,10 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
         super(props);
 
         this.state = {};
-
-        this.handleCancelChangesClick = this.handleCancelChangesClick.bind(this);
-        this.handleSaveCalculation = this.handleSaveCalculation.bind(this);
     }
 
     public componentDidMount() {
-        DataTransferManagerService.loadCalculation().then((result) => {
+        DataTransferService.loadCalculation().then((result) => {
             this.props.handlers.saveCalculation(result);
         });
     }
@@ -84,7 +84,7 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                             <CalculationRowComponent
                                 key={item.id.toString()}
                                 item={item}
-                                handleRemoveRowClick={this.handleRemoveRowClick.bind(this, item.id)}
+                                handleRemoveRowClick={this.props.handlers.clickRemoveRow.bind(this, item.id)}
                                 handleSwitchPaymentStatusClick={this.handleSwitchPaymentStatus.bind(this, item.id)}
                                 isActive={this.state.activeRowId === item.id}
                                 handleElementClick={this.handleCalculationRowClick.bind(this, item.id)}
@@ -100,8 +100,8 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                         <tr>
                             <td colSpan={6}>
                                 <div className="flex-container">
-                                    <CancelButtonComponent handleClick={this.handleCancelChangesClick} />
-                                    <SaveButtonComponent handleClick={this.handleSaveCalculation} />
+                                    <CancelButtonComponent handleClick={this.props.handlers.clickCancelCalculationChanges} />
+                                    <SaveButtonComponent handleClick={this.props.handlers.clickSaveCalculation.bind(this, this.props.calculation)} />
                                 </div>
                             </td>
                         </tr>
@@ -109,27 +109,6 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                 </table>
             </React.Fragment >
         );
-    }
-
-    private handleCancelChangesClick(): void {
-        // this.setState((state, props) => ({
-        //     calculation: this.cloneCalculation(state.originalCalculation),
-        // }));
-    }
-
-    private handleRemoveRowClick(id: string): void {
-        // const fn = (st: ICalculationTableComponentState) => {
-        //     const newArr = this.cloneCalculationItems(st.calculation.items);
-        //     const itemIndex = newArr.findIndex((x) => x.id === id);
-        //     newArr.splice(itemIndex, 1);
-        //     return newArr;
-        // };
-
-        // this.setState((state, props) => ({
-        //     calculation: {
-        //         items: fn(state),
-        //     },
-        // }));
     }
 
     private handleSwitchPaymentStatus(id: string): void {
@@ -147,14 +126,6 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
         // }));
     }
 
-    private handleSaveCalculation(): void {
-        // DataTransferManagerService.saveCalculation(this.props.calculation).then(() => {
-        //     this.setState((state, props) => ({
-        //         originalCalculation: this.cloneCalculation(this.state.calculation),
-        //     }));
-        // });
-    }
-
     private handleCalculationRowClick(id: string): void {
         this.setState((state, props) => ({
             activeRowId: id,
@@ -164,32 +135,44 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
 
 const mapReduxStateToComponentProps: (state: ICombinedReducersEntries) => ICalculationComponentProps = (state) => {
     return {
-        isNewRowMode: state ? state.appReducer.isNewRowMode : false,
         calculation: state ? state.appReducer.calculation : { items: [] },
+        isNewRowMode: state ? state.appReducer.isNewRowMode : false,
         originalCalculation: state ? state.appReducer.originalCalculation : { items: [] },
-    }
+    };
 };
 
-const mapComponentEventsToReduxDispatches: (dispatch: Dispatch<Action<number>>) => ICalculationComponentHandlersWrapper = dispatch => {
-    return {
-        handlers: {
-            clickAddNewRow: () => {
-                dispatch(AppActions.enableNewRowMode())
+const mapComponentEventsToReduxDispatches: (dispatch: Dispatch<Action<number>>) => ICalculationComponentHandlersWrapper =
+    (dispatch) => {
+        return {
+            handlers: {
+                clickAddNewRow: () => {
+                    dispatch(AppActions.enableNewRowMode());
+                },
+                clickCancelCalculationChanges: () => {
+                    dispatch(AppActions.cancelCalculationChanges());
+                },
+                clickCancelNewRow: () => {
+                    dispatch(AppActions.disableNewRowMode());
+                },
+                clickRemoveRow: (id: string) => {
+                    dispatch(AppActions.rmoveCalculationItem(id));
+                },
+                clickSaveCalculation: (calculation: ICalculation) => {
+                    DataTransferService.saveCalculation(calculation).then(() => {
+                        dispatch(AppActions.saveCalculation(calculation));
+                    });
+                },
+                clickSaveNewRow: (item: ICalculationItem) => {
+                    dispatch(AppActions.addNewCalculationItem(item));
+                },
+                saveCalculation: (calculation: ICalculation) => {
+                    dispatch(AppActions.saveCalculation(calculation));
+                },
             },
-            clickCancelNewRow: () => {
-                dispatch(AppActions.disableNewRowMode())
-            },
-            clickSaveNewRow: (item: ICalculationItem) => {
-                dispatch(AppActions.addNewCalculationItem(item))
-            },
-            saveCalculation: (item: ICalculation) => {
-                dispatch(AppActions.saveCalculation(item))
-            },
-        }
-    }
-}
+        };
+    };
 
 export const ConnectedCalculationTableComponent: any = connect(
     mapReduxStateToComponentProps,
-    mapComponentEventsToReduxDispatches
+    mapComponentEventsToReduxDispatches,
 )(CalculationTableComponent);

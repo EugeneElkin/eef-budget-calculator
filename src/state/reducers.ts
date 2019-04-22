@@ -1,13 +1,14 @@
-import { AnyAction, combineReducers, Reducer, Action } from "redux";
-import { AppActionType, IAppAction } from "./actions";
+import { combineReducers, Reducer } from "redux";
+
 import { ICalculation } from "../interfaces/i-calculation";
-import { ICalculationItem } from "../interfaces/i-calculation-item";
+import { DataMutationService } from "../services/data-mutation-service";
+import { AppActionType, IAppAction, LoginActionType } from "./actions";
 
 interface IAppReduxState {
     isLoginActive?: boolean | null;
     isNewRowMode: boolean;
-    calculation: ICalculation,
-    originalCalculation: ICalculation,
+    calculation: ICalculation;
+    originalCalculation: ICalculation;
 }
 
 interface IAuthReduxState {
@@ -20,20 +21,20 @@ export interface ICombinedReducersEntries {
 }
 
 const initialAppReducerState: IAppReduxState = {
+    calculation: { items: [] },
     isLoginActive: true,
     isNewRowMode: false,
-    calculation: { items: [] },
     originalCalculation: { items: [] },
 };
 
 const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, action: IAppAction) => {
     switch (action.type) {
-        case AppActionType.ACTIVATE_SIGNUP_TAB:
+        case LoginActionType.ACTIVATE_SIGNUP_TAB:
             return {
                 ...state,
                 isLoginActive: false,
             };
-        case AppActionType.ACTIVATE_LOGIN_TAB:
+        case LoginActionType.ACTIVATE_LOGIN_TAB:
             return {
                 ...state,
                 isLoginActive: true,
@@ -51,14 +52,27 @@ const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, act
         case AppActionType.ADD_NEW_CALCULATION_ITEM:
             return {
                 ...state,
+                calculation: DataMutationService.addNewItemInCalculation(state.calculation, action.value),
                 isNewRowMode: false,
-                calculation: addNewItemInCalculation(state.calculation, action.value),
             };
         case AppActionType.SAVE_CALCULATION:
             return {
                 ...state,
-                calculation: cloneCalculation(action.value),
-                originalCalculation: cloneCalculation(action.value),
+                calculation: DataMutationService.cloneCalculation(action.value),
+                isNewRowMode: false,
+                originalCalculation: DataMutationService.cloneCalculation(action.value),
+            };
+        case AppActionType.CANCEL_CALCULATION_CHANGES:
+            return {
+                ...state,
+                calculation: DataMutationService.cloneCalculation(state.originalCalculation),
+                isNewRowMode: false,
+            };
+        case AppActionType.REMOVE_CALCULATION_ITEM:
+            return {
+                ...state,
+                calculation: DataMutationService.removeItemFromCalculation(state.calculation, action.value),
+                isNewRowMode: false,
             };
         default:
             return state;
@@ -73,24 +87,3 @@ export const rootReducer: Reducer<ICombinedReducersEntries> = combineReducers({
     appReducer,
     authReducer,
 });
-
-// TODO: Move them to a service
-function cloneCalculation(calculation: ICalculation): ICalculation {
-    const clonnedCalculation = { ...calculation };
-    clonnedCalculation.items = cloneCalculationItems(calculation.items);
-    return clonnedCalculation;
-}
-
-function cloneCalculationItems(items: ICalculationItem[]) {
-    const clonnedItems: ICalculationItem[] = [];
-    for (const item of items) {
-        clonnedItems.push({ ...item });
-    }
-    return clonnedItems;
-}
-
-function addNewItemInCalculation(calculation: ICalculation, item: ICalculationItem) {
-    const newCalculation = cloneCalculation(calculation);
-    newCalculation.items.push(item);
-    return newCalculation;
-};

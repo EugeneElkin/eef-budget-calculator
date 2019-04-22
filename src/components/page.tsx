@@ -1,7 +1,8 @@
 import * as React from "react";
+
+import { store } from "../";
 import { ConnectedCalculationTableComponent } from "./calculation-table";
 import { DetailsFormComponent } from "./details-form";
-import { store } from "..";
 
 export class PageComponent extends React.Component<{}> {
     public render() {

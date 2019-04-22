@@ -1,6 +1,6 @@
 import { IValueDescriptor } from "../interfaces/i-value-descriptor";
 
-export class ValidationUtilsService {
+export class ValidationService {
     public static validateRequired<T>(checkingValue: T): IValueDescriptor<T> {
         let isvalid: boolean = true;
 

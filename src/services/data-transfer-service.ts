@@ -1,6 +1,6 @@
 import { ICalculation } from "../interfaces/i-calculation";
 
-export class DataTransferManagerService {
+export class DataTransferService {
     public static saveCalculation(calculation: ICalculation): Promise<void> {
         return new Promise((resolve, reject) => {
             localStorage.setItem(this.calculationKey, JSON.stringify(calculation));
