@@ -1,34 +1,71 @@
-import { AnyAction, combineReducers, Reducer } from "redux";
+import { AnyAction, combineReducers, Reducer, Action } from "redux";
+import { AppActionType, IAppAction } from "./actions";
+import { ICalculation } from "../interfaces/i-calculation";
+import { ICalculationItem } from "../interfaces/i-calculation-item";
 
-import { IAppProps } from "../types/appProps";
-import { IAuthProps } from "../types/authProps";
-import { ICombinedReducersEntries } from "../types/combinedReducersEntries";
-import { ActionType } from "./actions";
+interface IAppReduxState {
+    isLoginActive?: boolean | null;
+    isNewRowMode: boolean;
+    calculation: ICalculation,
+    originalCalculation: ICalculation,
+}
 
-const initialAppReducerState: IAppProps = {
+interface IAuthReduxState {
+    isAuthenticated: boolean;
+}
+
+export interface ICombinedReducersEntries {
+    authReducer: IAuthReduxState;
+    appReducer: IAppReduxState;
+}
+
+const initialAppReducerState: IAppReduxState = {
     isLoginActive: true,
+    isNewRowMode: false,
+    calculation: { items: [] },
+    originalCalculation: { items: [] },
 };
 
-const appReducer: Reducer = (state: IAppProps = initialAppReducerState, action: AnyAction) => {
+const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, action: IAppAction) => {
     switch (action.type) {
-        case ActionType.ACTIVATE_SIGNUP_TAB:
-            const result1 = {
+        case AppActionType.ACTIVATE_SIGNUP_TAB:
+            return {
                 ...state,
                 isLoginActive: false,
             };
-            return result1;
-        case ActionType.ACTIVATE_LOGIN_TAB:
-            const result2 = {
+        case AppActionType.ACTIVATE_LOGIN_TAB:
+            return {
                 ...state,
                 isLoginActive: true,
             };
-            return result2;
+        case AppActionType.ENABLE_NEW_ROW_MODE:
+            return {
+                ...state,
+                isNewRowMode: true,
+            };
+        case AppActionType.DISABLE_NEW_ROW_MODE:
+            return {
+                ...state,
+                isNewRowMode: false,
+            };
+        case AppActionType.ADD_NEW_CALCULATION_ITEM:
+            return {
+                ...state,
+                isNewRowMode: false,
+                calculation: addNewItemInCalculation(state.calculation, action.value),
+            };
+        case AppActionType.SAVE_CALCULATION:
+            return {
+                ...state,
+                calculation: cloneCalculation(action.value),
+                originalCalculation: cloneCalculation(action.value),
+            };
         default:
             return state;
     }
 };
 
-const authReducer: Reducer = (state: IAuthProps, action: AnyAction) => {
+const authReducer: Reducer = (state: IAppReduxState, action: IAppAction) => {
     return state ? state : {};
 };
 
@@ -36,3 +73,24 @@ export const rootReducer: Reducer<ICombinedReducersEntries> = combineReducers({
     appReducer,
     authReducer,
 });
+
+// TODO: Move them to a service
+function cloneCalculation(calculation: ICalculation): ICalculation {
+    const clonnedCalculation = { ...calculation };
+    clonnedCalculation.items = cloneCalculationItems(calculation.items);
+    return clonnedCalculation;
+}
+
+function cloneCalculationItems(items: ICalculationItem[]) {
+    const clonnedItems: ICalculationItem[] = [];
+    for (const item of items) {
+        clonnedItems.push({ ...item });
+    }
+    return clonnedItems;
+}
+
+function addNewItemInCalculation(calculation: ICalculation, item: ICalculationItem) {
+    const newCalculation = cloneCalculation(calculation);
+    newCalculation.items.push(item);
+    return newCalculation;
+};
