@@ -5,7 +5,7 @@ import { Action, Dispatch } from "redux";
 import { ICalculation } from "../interfaces/i-calculation";
 import { ICalculationItem } from "../interfaces/i-calculation-item";
 import { DataTransferService } from "../services/data-transfer-service";
-import { AppActions } from "../state/actions";
+import { appActions, loginActions } from "../state/actions";
 import { ICombinedReducersEntries } from "../state/reducers";
 import { CalculationNewRowComponent } from "./calculation-new-row";
 import { CalculationRowComponent } from "./calculation-row";
@@ -36,6 +36,7 @@ interface ICalculationComponentHandlers {
     clickSaveCalculation: (calculation: ICalculation) => void;
     clickSaveNewRow: (item: ICalculationItem) => void;
     clickRemoveRow: (id: string) => void;
+    clickSwitchPaymentStatus: (id: string) => void;
     saveCalculation: (item: ICalculation) => void;
 }
 
@@ -62,7 +63,7 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
 
         return (
             <React.Fragment>
-                <p>Calculation</p>
+                <p>Budget Calculation</p>
                 <table className="calculation-table">
                     <thead>
                         <tr>
@@ -85,7 +86,7 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                                 key={item.id.toString()}
                                 item={item}
                                 handleRemoveRowClick={this.props.handlers.clickRemoveRow.bind(this, item.id)}
-                                handleSwitchPaymentStatusClick={this.handleSwitchPaymentStatus.bind(this, item.id)}
+                                handleSwitchPaymentStatusClick={this.props.handlers.clickSwitchPaymentStatus.bind(this, item.id)}
                                 isActive={this.state.activeRowId === item.id}
                                 handleElementClick={this.handleCalculationRowClick.bind(this, item.id)}
                             />,
@@ -111,21 +112,6 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
         );
     }
 
-    private handleSwitchPaymentStatus(id: string): void {
-        // const fn = (st: ICalculationTableComponentState) => {
-        //     const newArr = this.cloneCalculationItems(st.calculation.items);
-        //     const itemIndex = newArr.findIndex((x) => x.id === id);
-        //     newArr[itemIndex].isPaid = !newArr[itemIndex].isPaid;
-        //     return newArr;
-        // };
-
-        // this.setState((state, props) => ({
-        //     calculation: {
-        //         items: fn(state),
-        //     },
-        // }));
-    }
-
     private handleCalculationRowClick(id: string): void {
         this.setState((state, props) => ({
             activeRowId: id,
@@ -146,27 +132,30 @@ const mapComponentEventsToReduxDispatches: (dispatch: Dispatch<Action<number>>) 
         return {
             handlers: {
                 clickAddNewRow: () => {
-                    dispatch(AppActions.enableNewRowMode());
+                    dispatch(appActions.enableNewRowMode());
                 },
                 clickCancelCalculationChanges: () => {
-                    dispatch(AppActions.cancelCalculationChanges());
+                    dispatch(appActions.cancelCalculationChanges());
                 },
                 clickCancelNewRow: () => {
-                    dispatch(AppActions.disableNewRowMode());
+                    dispatch(appActions.disableNewRowMode());
                 },
                 clickRemoveRow: (id: string) => {
-                    dispatch(AppActions.rmoveCalculationItem(id));
+                    dispatch(appActions.removeCalculationItem(id));
                 },
                 clickSaveCalculation: (calculation: ICalculation) => {
                     DataTransferService.saveCalculation(calculation).then(() => {
-                        dispatch(AppActions.saveCalculation(calculation));
+                        dispatch(appActions.saveCalculation(calculation));
                     });
                 },
                 clickSaveNewRow: (item: ICalculationItem) => {
-                    dispatch(AppActions.addNewCalculationItem(item));
+                    dispatch(appActions.addNewCalculationItem(item));
+                },
+                clickSwitchPaymentStatus: (id: string) => {
+                    dispatch(appActions.switchItemPaymentStatus(id));
                 },
                 saveCalculation: (calculation: ICalculation) => {
-                    dispatch(AppActions.saveCalculation(calculation));
+                    dispatch(appActions.saveCalculation(calculation));
                 },
             },
         };

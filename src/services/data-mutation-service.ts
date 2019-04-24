@@ -32,4 +32,12 @@ export class DataMutationService {
         calculation.items = newArr;
         return calculation;
     }
+
+    public static switchCalculationItemPaymentStatus(calculation: ICalculation, id: string): ICalculation {
+        const newArr = this.cloneCalculationItems(calculation.items);
+        const itemIndex = newArr.findIndex((x) => x.id === id);
+        newArr[itemIndex].isPaid = !newArr[itemIndex].isPaid;
+        calculation.items = newArr;
+        return calculation;
+    }
 }

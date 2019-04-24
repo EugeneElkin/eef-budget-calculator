@@ -74,6 +74,11 @@ const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, act
                 calculation: DataMutationService.removeItemFromCalculation(state.calculation, action.value),
                 isNewRowMode: false,
             };
+        case AppActionType.SWITCH_CALCULATION_ITEM_PAYMENT_STATUS:
+            return {
+                ...state,
+                calculation: DataMutationService.switchCalculationItemPaymentStatus(state.calculation, action.value),
+            }
         default:
             return state;
     }

@@ -12,17 +12,14 @@ export enum LoginActionType {
     ACTIVATE_LOGIN_TAB,
 }
 
-export class LoginActions {
-    public static activateSignUpTabAction: () => IAppAction = () =>
-        ({
-            type: LoginActionType.ACTIVATE_SIGNUP_TAB,
-        })
-
-    public static activateLoginTabAction: () => IAppAction = () =>
-        ({
-            type: LoginActionType.ACTIVATE_LOGIN_TAB,
-        })
-}
+export const loginActions = {
+    activateLoginTabAction: () => ({
+        type: LoginActionType.ACTIVATE_LOGIN_TAB,
+    }),
+    activateSignUpTabAction: () => ({
+        type: LoginActionType.ACTIVATE_SIGNUP_TAB,
+    }),
+};
 
 export enum AppActionType {
     ENABLE_NEW_ROW_MODE = 10,
@@ -31,38 +28,33 @@ export enum AppActionType {
     SAVE_CALCULATION,
     CANCEL_CALCULATION_CHANGES,
     REMOVE_CALCULATION_ITEM,
+    SWITCH_CALCULATION_ITEM_PAYMENT_STATUS,
 }
 
-export class AppActions {
-    public static enableNewRowMode: () => IAppAction = () =>
-        ({
-            type: AppActionType.ENABLE_NEW_ROW_MODE,
-        })
-
-    public static disableNewRowMode: () => IAppAction = () =>
-        ({
-            type: AppActionType.DISABLE_NEW_ROW_MODE,
-        })
-
-    public static addNewCalculationItem: (item: ICalculationItem) => IAppAction = (item) =>
-        ({
-            type: AppActionType.ADD_NEW_CALCULATION_ITEM,
-            value: item,
-        })
-
-    public static saveCalculation: (calculation: ICalculation) => IAppAction = (calculation) =>
-        ({
-            type: AppActionType.SAVE_CALCULATION,
-            value: calculation,
-        })
-
-    public static cancelCalculationChanges: () => IAppAction = () =>
-        ({
-            type: AppActionType.CANCEL_CALCULATION_CHANGES,
-        })
-
-        public static rmoveCalculationItem: (id: string) => IAppAction = (id) => ({
-            type: AppActionType.REMOVE_CALCULATION_ITEM,
-            value: id,
-        })
-}
+export const appActions = {
+    addNewCalculationItem: (item: ICalculationItem) => ({
+        type: AppActionType.ADD_NEW_CALCULATION_ITEM,
+        value: item,
+    }),
+    cancelCalculationChanges: () => ({
+        type: AppActionType.CANCEL_CALCULATION_CHANGES,
+    }),
+    disableNewRowMode: () => ({
+        type: AppActionType.DISABLE_NEW_ROW_MODE,
+    }),
+    enableNewRowMode: () => ({
+        type: AppActionType.ENABLE_NEW_ROW_MODE,
+    }),
+    removeCalculationItem: (id: string) => ({
+        type: AppActionType.REMOVE_CALCULATION_ITEM,
+        value: id,
+    }),
+    saveCalculation: (calculation: ICalculation) => ({
+        type: AppActionType.SAVE_CALCULATION,
+        value: calculation,
+    }),
+    switchItemPaymentStatus: (id: string) => ({
+        type: AppActionType.SWITCH_CALCULATION_ITEM_PAYMENT_STATUS,
+        value: id,
+    }),
+};
