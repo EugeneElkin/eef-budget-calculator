@@ -11,10 +11,7 @@ import { CalculationNewRowComponent } from "./calculation-new-row";
 import { CalculationRowComponent } from "./calculation-row";
 import { CancelButtonComponent } from "./reusable/cancel-button";
 import { SaveButtonComponent } from "./reusable/save-button";
-
-export interface ICalculationTableComponentState {
-    activeRowId?: string;
-}
+import { store } from "..";
 
 interface ICalculationComponentDescriptor extends ICalculationComponentHandlersWrapper, ICalculationComponentProps {
 }
@@ -23,6 +20,7 @@ interface ICalculationComponentProps {
     isNewRowMode: boolean;
     calculation: ICalculation;
     originalCalculation: ICalculation;
+    activeRowId?: string;
 }
 
 interface ICalculationComponentHandlersWrapper {
@@ -36,17 +34,16 @@ interface ICalculationComponentHandlers {
     clickSaveCalculation: (calculation: ICalculation) => void;
     clickSaveNewRow: (item: ICalculationItem) => void;
     clickRemoveRow: (id: string) => void;
+    clickSelectRow: (id: string) => void;
     clickSwitchPaymentStatus: (id: string) => void;
     saveCalculation: (item: ICalculation) => void;
 }
 
-class CalculationTableComponent extends React.Component<ICalculationComponentDescriptor, ICalculationTableComponentState> {
+class CalculationTableComponent extends React.Component<ICalculationComponentDescriptor> {
     private totalPlannedExpenses: number = 0;
 
     constructor(props: any) {
         super(props);
-
-        this.state = {};
     }
 
     public componentDidMount() {
@@ -83,12 +80,13 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                         }
                         {this.props.calculation.items.map((item) =>
                             <CalculationRowComponent
-                                key={item.id.toString()}
+                                key={item.id}
                                 item={item}
-                                handleRemoveRowClick={this.props.handlers.clickRemoveRow.bind(this, item.id)}
-                                handleSwitchPaymentStatusClick={this.props.handlers.clickSwitchPaymentStatus.bind(this, item.id)}
-                                isActive={this.state.activeRowId === item.id}
-                                handleElementClick={this.handleCalculationRowClick.bind(this, item.id)}
+                                handleRemoveRowClick={this.props.handlers.clickRemoveRow.bind(null, item.id)}
+                                handleSwitchPaymentStatusClick={this.props.handlers.clickSwitchPaymentStatus.bind(null, item.id)}
+                                isActive={this.props.activeRowId === item.id}
+                                isDisabled={this.props.isNewRowMode}
+                                handleElementClick={this.props.handlers.clickSelectRow.bind(null, item.id)}
                             />,
                         )}
                         <tr>
@@ -102,7 +100,7 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                             <td colSpan={6}>
                                 <div className="flex-container">
                                     <CancelButtonComponent handleClick={this.props.handlers.clickCancelCalculationChanges} />
-                                    <SaveButtonComponent handleClick={this.props.handlers.clickSaveCalculation.bind(this, this.props.calculation)} />
+                                    <SaveButtonComponent handleClick={this.props.handlers.clickSaveCalculation.bind(null, this.props.calculation)} />
                                 </div>
                             </td>
                         </tr>
@@ -111,19 +109,15 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
             </React.Fragment >
         );
     }
-
-    private handleCalculationRowClick(id: string): void {
-        this.setState((state, props) => ({
-            activeRowId: id,
-        }));
-    }
 }
 
 const mapReduxStateToComponentProps: (state: ICombinedReducersEntries) => ICalculationComponentProps = (state) => {
     return {
+        activeRowId: state ? state.appReducer.selectedItem : undefined,
         calculation: state ? state.appReducer.calculation : { items: [] },
         isNewRowMode: state ? state.appReducer.isNewRowMode : false,
         originalCalculation: state ? state.appReducer.originalCalculation : { items: [] },
+
     };
 };
 
@@ -150,6 +144,9 @@ const mapComponentEventsToReduxDispatches: (dispatch: Dispatch<Action<number>>) 
                 },
                 clickSaveNewRow: (item: ICalculationItem) => {
                     dispatch(appActions.addNewCalculationItem(item));
+                },
+                clickSelectRow: (id: string) => {
+                    dispatch(appActions.selectCalculationItem(id));
                 },
                 clickSwitchPaymentStatus: (id: string) => {
                     dispatch(appActions.switchItemPaymentStatus(id));

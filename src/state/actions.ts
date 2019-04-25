@@ -28,6 +28,7 @@ export enum AppActionType {
     SAVE_CALCULATION,
     CANCEL_CALCULATION_CHANGES,
     REMOVE_CALCULATION_ITEM,
+    SELECT_CALCULATION_ITEM,
     SWITCH_CALCULATION_ITEM_PAYMENT_STATUS,
 }
 
@@ -52,6 +53,10 @@ export const appActions = {
     saveCalculation: (calculation: ICalculation) => ({
         type: AppActionType.SAVE_CALCULATION,
         value: calculation,
+    }),
+    selectCalculationItem: (id: string) => ({
+        type: AppActionType.SELECT_CALCULATION_ITEM,
+        value: id,
     }),
     switchItemPaymentStatus: (id: string) => ({
         type: AppActionType.SWITCH_CALCULATION_ITEM_PAYMENT_STATUS,

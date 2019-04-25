@@ -9,6 +9,7 @@ interface IAppReduxState {
     isNewRowMode: boolean;
     calculation: ICalculation;
     originalCalculation: ICalculation;
+    selectedItem?: string
 }
 
 interface IAuthReduxState {
@@ -67,17 +68,24 @@ const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, act
                 ...state,
                 calculation: DataMutationService.cloneCalculation(state.originalCalculation),
                 isNewRowMode: false,
+                selectedItem: undefined,
             };
         case AppActionType.REMOVE_CALCULATION_ITEM:
             return {
                 ...state,
                 calculation: DataMutationService.removeItemFromCalculation(state.calculation, action.value),
                 isNewRowMode: false,
+                selectedItem: undefined,
             };
         case AppActionType.SWITCH_CALCULATION_ITEM_PAYMENT_STATUS:
             return {
                 ...state,
                 calculation: DataMutationService.switchCalculationItemPaymentStatus(state.calculation, action.value),
+            }
+        case AppActionType.SELECT_CALCULATION_ITEM:
+            return {
+                ...state,
+                selectedItem: action.value,
             }
         default:
             return state;
