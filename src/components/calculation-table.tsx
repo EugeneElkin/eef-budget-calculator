@@ -11,7 +11,6 @@ import { CalculationNewRowComponent } from "./calculation-new-row";
 import { CalculationRowComponent } from "./calculation-row";
 import { CancelButtonComponent } from "./reusable/cancel-button";
 import { SaveButtonComponent } from "./reusable/save-button";
-import { store } from "..";
 
 interface ICalculationComponentDescriptor extends ICalculationComponentHandlersWrapper, ICalculationComponentProps {
 }
@@ -34,8 +33,8 @@ interface ICalculationComponentHandlers {
     clickSaveCalculation: (calculation: ICalculation) => void;
     clickSaveNewRow: (item: ICalculationItem) => void;
     clickRemoveRow: (id: string) => void;
-    clickSelectRow: (id: string) => void;
-    clickSwitchPaymentStatus: (id: string) => void;
+    clickSelectRow: (item: ICalculationItem) => void;
+    clickSwitchPaymentStatus: (id: string, e: React.MouseEvent<HTMLInputElement>) => void;
     saveCalculation: (item: ICalculation) => void;
 }
 
@@ -60,16 +59,16 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
 
         return (
             <React.Fragment>
-                <p>Budget Calculation</p>
+                <h2>Budget Calculation</h2>
                 <table className="calculation-table">
                     <thead>
                         <tr>
-                            <th><button onClick={this.props.handlers.clickAddNewRow}>Add</button></th>
-                            <th></th>
-                            <th>Planned sum</th>
+                            <th style={{ width: "40px" }}><button onClick={this.props.handlers.clickAddNewRow}>Add</button></th>
+                            <th style={{ width: "60px" }}></th>
+                            <th style={{ width: "90px" }}>Planned sum</th>
                             <th>Planned aim</th>
-                            <th>Paid</th>
-                            <th></th>
+                            <th style={{ width: "40px" }}>Paid</th>
+                            <th style={{ width: "40px" }}></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,7 +85,7 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                                 handleSwitchPaymentStatusClick={this.props.handlers.clickSwitchPaymentStatus.bind(null, item.id)}
                                 isActive={this.props.activeRowId === item.id}
                                 isDisabled={this.props.isNewRowMode}
-                                handleElementClick={this.props.handlers.clickSelectRow.bind(null, item.id)}
+                                handleElementClick={this.props.handlers.clickSelectRow.bind(null, item)}
                             />,
                         )}
                         <tr>
@@ -113,7 +112,7 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
 
 const mapReduxStateToComponentProps: (state: ICombinedReducersEntries) => ICalculationComponentProps = (state) => {
     return {
-        activeRowId: state ? state.appReducer.selectedItem : undefined,
+        activeRowId: state ? (state.appReducer.selectedCalculationItem ? state.appReducer.selectedCalculationItem.id : undefined) : undefined,
         calculation: state ? state.appReducer.calculation : { items: [] },
         isNewRowMode: state ? state.appReducer.isNewRowMode : false,
         originalCalculation: state ? state.appReducer.originalCalculation : { items: [] },
@@ -145,11 +144,13 @@ const mapComponentEventsToReduxDispatches: (dispatch: Dispatch<Action<number>>) 
                 clickSaveNewRow: (item: ICalculationItem) => {
                     dispatch(appActions.addNewCalculationItem(item));
                 },
-                clickSelectRow: (id: string) => {
-                    dispatch(appActions.selectCalculationItem(id));
+                clickSelectRow: (item: ICalculationItem) => {
+                    dispatch(appActions.selectCalculationItem(item));
                 },
-                clickSwitchPaymentStatus: (id: string) => {
-                    dispatch(appActions.switchItemPaymentStatus(id));
+                clickSwitchPaymentStatus: (id: string, e: React.MouseEvent<HTMLInputElement>) => {
+                    e.stopPropagation();
+                    const value: boolean | undefined = e.currentTarget ? e.currentTarget.checked : undefined;
+                    dispatch(appActions.switchItemPaymentStatus(id, value));
                 },
                 saveCalculation: (calculation: ICalculation) => {
                     dispatch(appActions.saveCalculation(calculation));

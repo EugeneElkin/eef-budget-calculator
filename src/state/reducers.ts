@@ -3,13 +3,14 @@ import { combineReducers, Reducer } from "redux";
 import { ICalculation } from "../interfaces/i-calculation";
 import { DataMutationService } from "../services/data-mutation-service";
 import { AppActionType, IAppAction, LoginActionType } from "./actions";
+import { ICalculationItem } from "../interfaces/i-calculation-item";
 
 interface IAppReduxState {
     isLoginActive?: boolean | null;
     isNewRowMode: boolean;
     calculation: ICalculation;
     originalCalculation: ICalculation;
-    selectedItem?: string
+    selectedCalculationItem?: ICalculationItem
 }
 
 interface IAuthReduxState {
@@ -26,9 +27,10 @@ const initialAppReducerState: IAppReduxState = {
     isLoginActive: true,
     isNewRowMode: false,
     originalCalculation: { items: [] },
+    selectedCalculationItem: undefined,
 };
 
-const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, action: IAppAction) => {
+const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, action: IAppAction): IAppReduxState => {
     switch (action.type) {
         case LoginActionType.ACTIVATE_SIGNUP_TAB:
             return {
@@ -44,6 +46,7 @@ const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, act
             return {
                 ...state,
                 isNewRowMode: true,
+                selectedCalculationItem: undefined,
             };
         case AppActionType.DISABLE_NEW_ROW_MODE:
             return {
@@ -68,14 +71,14 @@ const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, act
                 ...state,
                 calculation: DataMutationService.cloneCalculation(state.originalCalculation),
                 isNewRowMode: false,
-                selectedItem: undefined,
+                selectedCalculationItem: undefined,
             };
         case AppActionType.REMOVE_CALCULATION_ITEM:
             return {
                 ...state,
                 calculation: DataMutationService.removeItemFromCalculation(state.calculation, action.value),
                 isNewRowMode: false,
-                selectedItem: undefined,
+                selectedCalculationItem: undefined,
             };
         case AppActionType.SWITCH_CALCULATION_ITEM_PAYMENT_STATUS:
             return {
@@ -85,7 +88,7 @@ const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, act
         case AppActionType.SELECT_CALCULATION_ITEM:
             return {
                 ...state,
-                selectedItem: action.value,
+                selectedCalculationItem: action.value,
             }
         default:
             return state;

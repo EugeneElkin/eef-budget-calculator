@@ -1,6 +1,11 @@
 import { ICalculation } from "../interfaces/i-calculation";
 import { ICalculationItem } from "../interfaces/i-calculation-item";
 
+interface IPaidStatus {
+    id: string,
+    flagStatus: string
+}
+
 export class DataMutationService {
     public static cloneCalculation(calculation: ICalculation): ICalculation {
         const clonnedCalculation = { ...calculation };
@@ -23,21 +28,26 @@ export class DataMutationService {
     }
 
     public static removeItemFromCalculation(calculation: ICalculation, id: string): ICalculation {
-        const newArr = this.cloneCalculationItems(calculation.items);
+        const newCalculation = this.cloneCalculation(calculation);
+        const newArr = this.cloneCalculationItems(newCalculation.items);
         const itemIndex = newArr.findIndex((x) => x.id === id);
         if (itemIndex === -1) {
-            return calculation;
+            return newCalculation;
         }
         newArr.splice(itemIndex, 1);
-        calculation.items = newArr;
-        return calculation;
+        newCalculation.items = newArr;
+        return newCalculation;
     }
 
-    public static switchCalculationItemPaymentStatus(calculation: ICalculation, id: string): ICalculation {
-        const newArr = this.cloneCalculationItems(calculation.items);
-        const itemIndex = newArr.findIndex((x) => x.id === id);
-        newArr[itemIndex].isPaid = !newArr[itemIndex].isPaid;
-        calculation.items = newArr;
-        return calculation;
+    public static switchCalculationItemPaymentStatus(calculation: ICalculation, paidStatus: IPaidStatus): ICalculation {
+        const newCalculation = this.cloneCalculation(calculation);
+        const newArr = this.cloneCalculationItems(newCalculation.items);
+        const itemIndex = newArr.findIndex((x) => x.id === paidStatus.id);
+        if (itemIndex === -1) {
+            return newCalculation;
+        }
+        newArr[itemIndex].isPaid = paidStatus.flagStatus ? true : false;        
+        newCalculation.items = newArr;
+        return newCalculation;
     }
 }

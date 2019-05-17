@@ -54,12 +54,15 @@ export const appActions = {
         type: AppActionType.SAVE_CALCULATION,
         value: calculation,
     }),
-    selectCalculationItem: (id: string) => ({
+    selectCalculationItem: (item: ICalculationItem) => ({
         type: AppActionType.SELECT_CALCULATION_ITEM,
-        value: id,
+        value: item,
     }),
-    switchItemPaymentStatus: (id: string) => ({
+    switchItemPaymentStatus: (id: string, value?: boolean) => ({
         type: AppActionType.SWITCH_CALCULATION_ITEM_PAYMENT_STATUS,
-        value: id,
+        value: {
+            id: id,
+            flagStatus: value,
+        },
     }),
 };

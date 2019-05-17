@@ -9,7 +9,7 @@ import { ICombinedReducersEntries } from "../state/reducers";
 export interface ICalculationRowComponentProps {
     item: ICalculationItem;
     handleRemoveRowClick: () => void;
-    handleSwitchPaymentStatusClick: () => void;
+    handleSwitchPaymentStatusClick: (e: React.MouseEvent<HTMLInputElement>) => void;
     handleElementClick?: () => void;
     isActive?: boolean;
     isDisabled?: boolean;

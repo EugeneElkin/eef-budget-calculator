@@ -1,5 +1,5 @@
 button {
-    background-color: #c1d6c8;
+    background-color: #b5e0c3;
     border: none;
     color: #474B24;
     padding: 5px 10px;
@@ -16,10 +16,15 @@ button.cancel {
 button.remove {
     background-color: #f0af95;
 }
-button:hover, button[disabled] {
-    background-color: white; /* Green */
+button:hover {
+    background-color: #ffffff;
     color: black;
     cursor: pointer;
+}
+
+button[disabled] {
+    background-color: #e3e3e3;
+    color: #a4a4a4;
 }
 
 input[type=text] {
@@ -42,6 +47,7 @@ input[type=text].valid {
 table.calculation-table { 
     border-collapse: collapse;
     margin-bottom: 10px;
+    width: 100%;
 }
 table.calculation-table th, table.calculation-table td { 
     border: 1px solid green;
@@ -60,4 +66,22 @@ table.calculation-table tr.is-active td {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    /*justify-items: center;*/
+    /*align-items: start;*/
+}
+.calculation-grid-cell {
+    border: 1px solid Green;
+    width: 600px;
+    padding: 10px;
+    justify-self: end;
+}
+.details-grid-cell {
+    border: 1px solid Blue;
+    width: 400px;
+    padding: 10px;
 }
