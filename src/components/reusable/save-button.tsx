@@ -1,19 +1,14 @@
 import * as React from "react";
-import { ButtonComponent } from "./basic/button";
+import { ButtonComponent, IButtonComponentComponentProps } from "./basic/button";
 
-export interface ISaveButtonComponentProps {
-    handleClick: () => void;
-    buttonText?: string;
-    className?: string;
-}
-
-export class SaveButtonComponent extends React.Component<ISaveButtonComponentProps> {
+export class SaveButtonComponent extends React.Component<IButtonComponentComponentProps> {
     public render() {
         return (
             <ButtonComponent
                 className={this.props.className ? this.props.className : "save"}
                 handleClick={this.props.handleClick}
-            >{this.props.buttonText ? this.props.buttonText : "Save"}</ButtonComponent>
+                isDisabled={this.props.isDisabled}
+            >{this.props.children ? this.props.children : "Save"}</ButtonComponent>
         );
     }
 }

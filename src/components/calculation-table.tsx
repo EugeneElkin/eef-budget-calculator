@@ -32,7 +32,7 @@ interface ICalculationComponentHandlers {
     clickCancelCalculationChanges: () => void;
     clickSaveCalculation: (calculation: ICalculation) => void;
     clickSaveNewRow: (item: ICalculationItem) => void;
-    clickRemoveRow: (id: string) => void;
+    clickRemoveRow: (id: string, e: React.MouseEvent<HTMLButtonElement>) => void;
     clickSelectRow: (item: ICalculationItem) => void;
     clickSwitchPaymentStatus: (id: string, e: React.MouseEvent<HTMLInputElement>) => void;
     saveCalculation: (item: ICalculation) => void;
@@ -63,7 +63,12 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                 <table className="calculation-table">
                     <thead>
                         <tr>
-                            <th style={{ width: "40px" }}><button onClick={this.props.handlers.clickAddNewRow}>Add</button></th>
+                            <th style={{ width: "40px" }}>
+                                <button
+                                    onClick={this.props.handlers.clickAddNewRow}
+                                    disabled={this.props.isNewRowMode}
+                                >Add</button>
+                            </th>
                             <th style={{ width: "60px" }}></th>
                             <th style={{ width: "90px" }}>Planned sum</th>
                             <th>Planned aim</th>
@@ -85,7 +90,7 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                                 handleSwitchPaymentStatusClick={this.props.handlers.clickSwitchPaymentStatus.bind(null, item.id)}
                                 isActive={this.props.activeRowId === item.id}
                                 isDisabled={this.props.isNewRowMode}
-                                handleElementClick={this.props.handlers.clickSelectRow.bind(null, item)}
+                                handleElementClick={this.props.isNewRowMode ? () => { } : this.props.handlers.clickSelectRow.bind(null, item)}
                             />,
                         )}
                         <tr>
@@ -98,8 +103,14 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                         <tr>
                             <td colSpan={6}>
                                 <div className="flex-container">
-                                    <CancelButtonComponent handleClick={this.props.handlers.clickCancelCalculationChanges} />
-                                    <SaveButtonComponent handleClick={this.props.handlers.clickSaveCalculation.bind(null, this.props.calculation)} />
+                                    <CancelButtonComponent
+                                        handleClick={this.props.handlers.clickCancelCalculationChanges}
+                                        isDisabled={this.props.isNewRowMode}
+                                    />
+                                    <SaveButtonComponent
+                                        handleClick={this.props.handlers.clickSaveCalculation.bind(null, this.props.calculation)}
+                                        isDisabled={this.props.isNewRowMode}
+                                    />
                                 </div>
                             </td>
                         </tr>
@@ -133,7 +144,8 @@ const mapComponentEventsToReduxDispatches: (dispatch: Dispatch<Action<number>>) 
                 clickCancelNewRow: () => {
                     dispatch(appActions.disableNewRowMode());
                 },
-                clickRemoveRow: (id: string) => {
+                clickRemoveRow: (id: string, e: React.MouseEvent<HTMLButtonElement>) => {
+                    e.stopPropagation();
                     dispatch(appActions.removeCalculationItem(id));
                 },
                 clickSaveCalculation: (calculation: ICalculation) => {

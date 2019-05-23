@@ -22,7 +22,7 @@ export class ValidationService {
      * If {@link checkingValue} is invalid there will be returned result depends on {@link handleInvalidNumericValueForTextbox} function.
      * @param checkingValue the value that is necessery to check
      * @param previousValidValue the value that will be return if {@link checkingValue} is invalid
-     * @param isRequired the sign that says that emty input is forbidden
+     * @param isRequired the sign that says that empty input is forbidden
      */
     public static validateMoneyFormat(
         checkingValue: string,

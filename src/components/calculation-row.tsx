@@ -8,7 +8,7 @@ import { ICombinedReducersEntries } from "../state/reducers";
 
 export interface ICalculationRowComponentProps {
     item: ICalculationItem;
-    handleRemoveRowClick: () => void;
+    handleRemoveRowClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
     handleSwitchPaymentStatusClick: (e: React.MouseEvent<HTMLInputElement>) => void;
     handleElementClick?: () => void;
     isActive?: boolean;
@@ -39,7 +39,13 @@ export class CalculationRowComponent extends React.Component<ICalculationRowComp
                 <td></td>
                 <td>{this.props.item.sum}</td>
                 <td>{this.props.item.aim}</td>
-                <td><input type="checkbox" checked={this.props.item.isPaid} onClick={this.props.handleSwitchPaymentStatusClick} /></td>
+                <td>
+                    <input type="checkbox"
+                        checked={this.props.item.isPaid}
+                        onClick={this.props.handleSwitchPaymentStatusClick}
+                        disabled={this.props.isDisabled}
+                    />
+                </td>
                 <td>
                     <button
                         className="remove"

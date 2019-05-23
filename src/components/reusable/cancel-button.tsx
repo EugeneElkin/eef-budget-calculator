@@ -1,19 +1,14 @@
 import * as React from "react";
-import { ButtonComponent } from "./basic/button";
+import { ButtonComponent, IButtonComponentComponentProps } from "./basic/button";
 
-export interface ICancelButtonComponentComponentProps {
-    handleClick: () => void;
-    buttonText?: string;
-    className?: string;
-}
-
-export class CancelButtonComponent extends React.Component<ICancelButtonComponentComponentProps> {
+export class CancelButtonComponent extends React.Component<IButtonComponentComponentProps> {
     public render() {
         return (
             <ButtonComponent
                 className={this.props.className ? this.props.className : "cancel"}
                 handleClick={this.props.handleClick}
-            >{this.props.buttonText ? this.props.buttonText : "Cancel"}</ButtonComponent>
+                isDisabled={this.props.isDisabled}
+            >{this.props.children ? this.props.children : "Cancel"}</ButtonComponent>
         );
     }
 }
