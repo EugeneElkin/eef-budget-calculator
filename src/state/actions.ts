@@ -29,7 +29,9 @@ export enum AppActionType {
     CANCEL_CALCULATION_CHANGES,
     REMOVE_CALCULATION_ITEM,
     SELECT_CALCULATION_ITEM,
+    SELECT_TOTALS_CALCULATION_ITEM,
     SWITCH_CALCULATION_ITEM_PAYMENT_STATUS,
+    CHANGE_CALCULATION_AVAILABLE_SUM,
     CHANGE_CALCULATION_ITEM_PROPERTY,
 }
 
@@ -37,6 +39,10 @@ export const appActions = {
     addNewCalculationItem: (item: ICalculationItem) => ({
         type: AppActionType.ADD_NEW_CALCULATION_ITEM,
         value: item,
+    }),
+    changeCalcualtionAvailableSum: (sum: string) => ({
+        type: AppActionType.CHANGE_CALCULATION_AVAILABLE_SUM,
+        value: sum,
     }),
     cancelCalculationChanges: () => ({
         type: AppActionType.CANCEL_CALCULATION_CHANGES,
@@ -66,6 +72,9 @@ export const appActions = {
     selectCalculationItem: (item: ICalculationItem) => ({
         type: AppActionType.SELECT_CALCULATION_ITEM,
         value: item,
+    }),
+    selectTotalsItem: () => ({
+        type: AppActionType.SELECT_TOTALS_CALCULATION_ITEM,
     }),
     switchItemPaymentStatus: (id: string, value?: boolean) => ({
         type: AppActionType.SWITCH_CALCULATION_ITEM_PAYMENT_STATUS,

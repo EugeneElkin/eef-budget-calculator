@@ -10,7 +10,7 @@ export class DataTransferService {
 
     public static loadCalculation(): Promise<ICalculation> {
         return new Promise((resolve, reject) => {
-            let storedCalculation: ICalculation = { items: [] };
+            let storedCalculation: ICalculation = { items: [], availableSum: 0 };
 
             try {
                 const calculation: string | null = localStorage.getItem(this.calculationKey);
@@ -20,6 +20,10 @@ export class DataTransferService {
             } catch (ex) {
                 // TODO: handle somehow to add then a notifying message
                 reject();
+            }
+
+            if (!storedCalculation.availableSum) {
+                storedCalculation.availableSum = 0;
             }
 
             resolve(storedCalculation);

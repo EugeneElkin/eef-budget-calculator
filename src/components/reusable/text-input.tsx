@@ -36,7 +36,7 @@ export class TextInputComponent extends React.Component<ITextInputComponentCompo
                     value={this.props.value}
                     className={classNames.join(" ")}
                     onChange={this.props.changeHandler}
-                    onBlur={this.props.blurHandler}
+                    onBlur={this.props.isValid ? this.props.blurHandler : undefined}
                 />
             </React.Fragment>
         );

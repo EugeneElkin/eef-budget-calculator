@@ -23,12 +23,14 @@ export interface ICombinedReducersEntries {
 }
 
 const initialAppReducerState: IAppReduxState = {
-    calculation: { items: [] },
+    calculation: { items: [], availableSum: 0 },
     isLoginActive: true,
     isNewRowMode: false,
-    originalCalculation: { items: [] },
+    originalCalculation: { items: [], availableSum: 0 },
     selectedCalculationItem: undefined,
 };
+
+export const showTotalsDetailsItemId: string = "show-totals-details";
 
 const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, action: IAppAction): IAppReduxState => {
     switch (action.type) {
@@ -90,10 +92,25 @@ const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, act
                 ...state,
                 selectedCalculationItem: action.value,
             }
+        case AppActionType.SELECT_TOTALS_CALCULATION_ITEM:
+            return {
+                ...state,
+                selectedCalculationItem: {
+                    aim: "Show Totals Details",
+                    id: showTotalsDetailsItemId,
+                    sum: state.calculation.availableSum,
+                    isPaid: false
+                }
+            }
         case AppActionType.CHANGE_CALCULATION_ITEM_PROPERTY:
             return {
                 ...state,
-                calculation: DataMutationService.changeCalculationItemProperty(state.calculation, action.value)
+                calculation: DataMutationService.changeCalculationItemProperty(state.calculation, action.value),
+            }
+        case AppActionType.CHANGE_CALCULATION_AVAILABLE_SUM:
+            return {
+                ...state,
+                calculation: DataMutationService.changeCalculationAvailableSum(state.calculation, action.value),
             }
         default:
             return state;

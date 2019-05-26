@@ -53,6 +53,10 @@ export class DataMutationService {
             return newCalculation;
         }
         newArr[itemIndex].isPaid = paidStatus.flagStatus ? true : false;
+        console.log(newArr[itemIndex].sum);
+        newCalculation.availableSum = paidStatus.flagStatus
+            ? +newCalculation.availableSum - newArr[itemIndex].sum
+            : +newCalculation.availableSum + newArr[itemIndex].sum;
         newCalculation.items = newArr;
         return newCalculation;
     }
@@ -66,6 +70,12 @@ export class DataMutationService {
         }
         newArr[itemIndex][changingProperty.propName] = changingProperty.propVal
         newCalculation.items = newArr;
+        return newCalculation;
+    }
+
+    public static changeCalculationAvailableSum(calculation: ICalculation, newSum: number): ICalculation {
+        const newCalculation = this.cloneCalculation(calculation);
+        newCalculation.availableSum = newSum;
         return newCalculation;
     }
 }

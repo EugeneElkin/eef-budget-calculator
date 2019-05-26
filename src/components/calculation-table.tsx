@@ -6,7 +6,7 @@ import { ICalculation } from "../interfaces/i-calculation";
 import { ICalculationItem } from "../interfaces/i-calculation-item";
 import { DataTransferService } from "../services/data-transfer-service";
 import { appActions, loginActions } from "../state/actions";
-import { ICombinedReducersEntries } from "../state/reducers";
+import { ICombinedReducersEntries, showTotalsDetailsItemId } from "../state/reducers";
 import { CalculationNewRowComponent } from "./calculation-new-row";
 import { CalculationRowComponent } from "./calculation-row";
 import { CancelButtonComponent } from "./reusable/cancel-button";
@@ -34,13 +34,12 @@ interface ICalculationComponentHandlers {
     clickSaveNewRow: (item: ICalculationItem) => void;
     clickRemoveRow: (id: string, e: React.MouseEvent<HTMLButtonElement>) => void;
     clickSelectRow: (item: ICalculationItem) => void;
+    clickSelectTotalsRow: () => void;
     clickSwitchPaymentStatus: (id: string, e: React.MouseEvent<HTMLInputElement>) => void;
     saveCalculation: (item: ICalculation) => void;
 }
 
 class CalculationTableComponent extends React.Component<ICalculationComponentDescriptor> {
-    private totalPlannedExpenses: number = 0;
-
     constructor(props: any) {
         super(props);
     }
@@ -58,10 +57,12 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
             currencyDisplay: "code",
         });
 
-        this.totalPlannedExpenses = this.props.calculation.items
+        const totalPlannedExpenses: number = this.props.calculation.items
             .filter((x) => !x.isPaid)
             .map((x) => x.sum)
             .reduce((a: number, b: number) => +a + +b, 0);
+
+        const balanceSum: number = this.props.calculation.availableSum - totalPlannedExpenses;
 
         return (
             <React.Fragment>
@@ -99,10 +100,17 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                                 handleElementClick={this.props.isNewRowMode ? () => { } : this.props.handlers.clickSelectRow.bind(null, item)}
                             />,
                         )}
-                        <tr>
+                        <tr
+                            className={(this.props.activeRowId === showTotalsDetailsItemId ? "is-active" : undefined)}
+                            onClick={this.props.isNewRowMode ? () => { } : this.props.handlers.clickSelectTotalsRow}
+                        >
                             <td>Total</td>
                             <td></td>
-                            <td colSpan={4}>{formatter.format(this.totalPlannedExpenses)}</td>
+                            <td colSpan={4}>
+                                <span style={{ color: "green" }}>{formatter.format(this.props.calculation.availableSum)}</span> &#8722;&nbsp;
+                                <span style={{ color: "red" }}>{formatter.format(totalPlannedExpenses)}</span> =&nbsp;
+                                <span style={(balanceSum >= 0 ? { color: "green" } : { color: "red" })}>{formatter.format(balanceSum)}</span>
+                            </td>
                         </tr>
                     </tbody>
                     <tfoot>
@@ -130,9 +138,9 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
 const mapReduxStateToComponentProps: (state: ICombinedReducersEntries) => ICalculationComponentProps = (state) => {
     return {
         activeRowId: state ? (state.appReducer.selectedCalculationItem ? state.appReducer.selectedCalculationItem.id : undefined) : undefined,
-        calculation: state ? state.appReducer.calculation : { items: [] },
+        calculation: state ? state.appReducer.calculation : { items: [], availableSum: 0 },
         isNewRowMode: state ? state.appReducer.isNewRowMode : false,
-        originalCalculation: state ? state.appReducer.originalCalculation : { items: [] },
+        originalCalculation: state ? state.appReducer.originalCalculation : { items: [], availableSum: 0 },
 
     };
 };
@@ -164,6 +172,9 @@ const mapComponentEventsToReduxDispatches: (dispatch: Dispatch<Action<number>>) 
                 },
                 clickSelectRow: (item: ICalculationItem) => {
                     dispatch(appActions.selectCalculationItem(item));
+                },
+                clickSelectTotalsRow: () => {
+                    dispatch(appActions.selectTotalsItem());
                 },
                 clickSwitchPaymentStatus: (id: string, e: React.MouseEvent<HTMLInputElement>) => {
                     e.stopPropagation();
