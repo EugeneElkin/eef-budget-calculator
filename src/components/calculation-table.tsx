@@ -52,6 +52,12 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
     }
 
     public render() {
+        var formatter = new Intl.NumberFormat("ru-RU", {
+            style: "currency",
+            currency: "RUB",
+            currencyDisplay: "code",
+        });
+
         this.totalPlannedExpenses = this.props.calculation.items
             .filter((x) => !x.isPaid)
             .map((x) => x.sum)
@@ -96,7 +102,7 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                         <tr>
                             <td>Total</td>
                             <td></td>
-                            <td colSpan={4}>{this.totalPlannedExpenses}</td>
+                            <td colSpan={4}>{formatter.format(this.totalPlannedExpenses)}</td>
                         </tr>
                     </tbody>
                     <tfoot>

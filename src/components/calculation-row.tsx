@@ -31,13 +31,19 @@ export class CalculationRowComponent extends React.Component<ICalculationRowComp
             classNames.push("is-active");
         }
 
+        var formatter = new Intl.NumberFormat("ru-RU", {
+            style: "currency",
+            currency: "RUB",
+            currencyDisplay: "code",
+        });
+
         return (
             <tr
                 className={classNames.length > 0 ? classNames.join(" ") : undefined}
                 onClick={this.props.handleElementClick} >
                 <td></td>
                 <td></td>
-                <td>{this.props.item.sum}</td>
+                <td>{formatter.format(this.props.item.sum)}</td>
                 <td>{this.props.item.aim}</td>
                 <td>
                     <input type="checkbox"

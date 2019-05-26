@@ -18,8 +18,6 @@ export interface ICalculationNewRowComponentProps {
 }
 
 export class CalculationNewRowComponent extends React.Component<ICalculationNewRowComponentProps, ICalculationNewRowComponentState> {
-    private isRequired: boolean = true;
-
     constructor(props: any) {
         super(props);
 
@@ -69,7 +67,7 @@ export class CalculationNewRowComponent extends React.Component<ICalculationNewR
         const value: string = event.currentTarget.value;
 
         this.setState((state, props) => ({
-            plannedSum: ValidationService.validateMoneyFormat(value, state.plannedSum.value, this.isRequired),
+            plannedSum: ValidationService.validateMoneyFormat(value, state.plannedSum.value, true),
         }));
     }
 

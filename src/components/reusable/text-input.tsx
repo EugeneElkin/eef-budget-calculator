@@ -2,6 +2,7 @@ import * as React from "react";
 
 export interface ITextInputComponentComponentProps {
     changeHandler?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    blurHandler?: (event: React.ChangeEvent<HTMLInputElement>) => void;
     className?: string;
     isDisabled?: boolean;
     isValid?: boolean;
@@ -35,6 +36,7 @@ export class TextInputComponent extends React.Component<ITextInputComponentCompo
                     value={this.props.value}
                     className={classNames.join(" ")}
                     onChange={this.props.changeHandler}
+                    onBlur={this.props.blurHandler}
                 />
             </React.Fragment>
         );

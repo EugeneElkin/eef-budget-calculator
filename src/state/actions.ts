@@ -30,6 +30,7 @@ export enum AppActionType {
     REMOVE_CALCULATION_ITEM,
     SELECT_CALCULATION_ITEM,
     SWITCH_CALCULATION_ITEM_PAYMENT_STATUS,
+    CHANGE_CALCULATION_ITEM_PROPERTY,
 }
 
 export const appActions = {
@@ -39,6 +40,14 @@ export const appActions = {
     }),
     cancelCalculationChanges: () => ({
         type: AppActionType.CANCEL_CALCULATION_CHANGES,
+    }),
+    changeCalcualtionItemProperty: (id: string, propName: string, propVal: any) => ({
+        type: AppActionType.CHANGE_CALCULATION_ITEM_PROPERTY,
+        value: {
+            itemId: id,
+            propName: propName,
+            propVal: propVal,
+        },
     }),
     disableNewRowMode: () => ({
         type: AppActionType.DISABLE_NEW_ROW_MODE,

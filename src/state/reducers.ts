@@ -90,6 +90,11 @@ const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, act
                 ...state,
                 selectedCalculationItem: action.value,
             }
+        case AppActionType.CHANGE_CALCULATION_ITEM_PROPERTY:
+            return {
+                ...state,
+                calculation: DataMutationService.changeCalculationItemProperty(state.calculation, action.value)
+            }
         default:
             return state;
     }
