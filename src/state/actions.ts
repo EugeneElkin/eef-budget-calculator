@@ -12,7 +12,7 @@ export enum LoginActionType {
     ACTIVATE_LOGIN_TAB,
 }
 
-export const loginActions = {
+const login = {
     activateLoginTabAction: () => ({
         type: LoginActionType.ACTIVATE_LOGIN_TAB,
     }),
@@ -35,24 +35,24 @@ export enum AppActionType {
     CHANGE_CALCULATION_ITEM_PROPERTY,
 }
 
-export const appActions = {
+const app = {
     addNewCalculationItem: (item: ICalculationItem) => ({
         type: AppActionType.ADD_NEW_CALCULATION_ITEM,
         value: item,
+    }),
+    cancelCalculationChanges: () => ({
+        type: AppActionType.CANCEL_CALCULATION_CHANGES,
     }),
     changeCalcualtionAvailableSum: (sum: string) => ({
         type: AppActionType.CHANGE_CALCULATION_AVAILABLE_SUM,
         value: sum,
     }),
-    cancelCalculationChanges: () => ({
-        type: AppActionType.CANCEL_CALCULATION_CHANGES,
-    }),
     changeCalcualtionItemProperty: (id: string, propName: string, propVal: any) => ({
         type: AppActionType.CHANGE_CALCULATION_ITEM_PROPERTY,
         value: {
             itemId: id,
-            propName: propName,
-            propVal: propVal,
+            propName,
+            propVal,
         },
     }),
     disableNewRowMode: () => ({
@@ -79,8 +79,13 @@ export const appActions = {
     switchItemPaymentStatus: (id: string, value?: boolean) => ({
         type: AppActionType.SWITCH_CALCULATION_ITEM_PAYMENT_STATUS,
         value: {
-            id: id,
             flagStatus: value,
+            id,
         },
     }),
+};
+
+export const Actions = {
+    app,
+    login,
 };

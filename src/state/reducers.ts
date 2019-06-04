@@ -1,16 +1,16 @@
 import { combineReducers, Reducer } from "redux";
 
 import { ICalculation } from "../interfaces/i-calculation";
+import { ICalculationItem } from "../interfaces/i-calculation-item";
 import { DataMutationService } from "../services/data-mutation-service";
 import { AppActionType, IAppAction, LoginActionType } from "./actions";
-import { ICalculationItem } from "../interfaces/i-calculation-item";
 
 interface IAppReduxState {
     isLoginActive?: boolean | null;
     isNewRowMode: boolean;
     calculation: ICalculation;
     originalCalculation: ICalculation;
-    selectedCalculationItem?: ICalculationItem
+    selectedCalculationItem?: ICalculationItem;
 }
 
 interface IAuthReduxState {
@@ -86,32 +86,32 @@ const appReducer: Reducer = (state: IAppReduxState = initialAppReducerState, act
             return {
                 ...state,
                 calculation: DataMutationService.switchCalculationItemPaymentStatus(state.calculation, action.value),
-            }
+            };
         case AppActionType.SELECT_CALCULATION_ITEM:
             return {
                 ...state,
                 selectedCalculationItem: action.value,
-            }
+            };
         case AppActionType.SELECT_TOTALS_CALCULATION_ITEM:
             return {
                 ...state,
                 selectedCalculationItem: {
                     aim: "Show Totals Details",
                     id: showTotalsDetailsItemId,
+                    isPaid: false,
                     sum: state.calculation.availableSum,
-                    isPaid: false
-                }
-            }
+                },
+            };
         case AppActionType.CHANGE_CALCULATION_ITEM_PROPERTY:
             return {
                 ...state,
                 calculation: DataMutationService.changeCalculationItemProperty(state.calculation, action.value),
-            }
+            };
         case AppActionType.CHANGE_CALCULATION_AVAILABLE_SUM:
             return {
                 ...state,
                 calculation: DataMutationService.changeCalculationAvailableSum(state.calculation, action.value),
-            }
+            };
         default:
             return state;
     }

@@ -1,10 +1,5 @@
 import * as React from "react";
-
 import { ICalculationItem } from "../interfaces/i-calculation-item";
-import { connect } from "react-redux";
-import { appActions } from "../state/actions";
-import { Dispatch, Action } from "redux";
-import { ICombinedReducersEntries } from "../state/reducers";
 
 export interface ICalculationRowComponentProps {
     item: ICalculationItem;
@@ -31,10 +26,10 @@ export class CalculationRowComponent extends React.Component<ICalculationRowComp
             classNames.push("is-active");
         }
 
-        var formatter = new Intl.NumberFormat("ru-RU", {
-            style: "currency",
+        const formatter: Intl.NumberFormat = new Intl.NumberFormat("ru-RU", {
             currency: "RUB",
             currencyDisplay: "code",
+            style: "currency",
         });
 
         return (

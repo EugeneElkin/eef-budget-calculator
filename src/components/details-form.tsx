@@ -1,14 +1,15 @@
 import * as React from "react";
-import { ICombinedReducersEntries, showTotalsDetailsItemId } from "../state/reducers";
-import { Dispatch, Action } from "redux";
 import { connect } from "react-redux";
+import { Action, Dispatch } from "redux";
+
 import { ICalculationItem } from "../interfaces/i-calculation-item";
-import { appActions } from "../state/actions";
+import { Actions } from "../state/actions";
+import { ICombinedReducersEntries, showTotalsDetailsItemId } from "../state/reducers";
 import { DetailsFormCalculationItemComponent } from "./details-form-calculation-item";
 import { DetailsFormTotalsComponent } from "./details-form-totals";
 
 interface IComponentProps {
-    selectedCalculationItem?: ICalculationItem
+    selectedCalculationItem?: ICalculationItem;
 }
 
 interface IComponentHandlers {
@@ -62,7 +63,7 @@ class DetailsFormComponent extends React.Component<IComponentDescriptor, {}> {
 
 const mapReduxStateToComponentProps: (state: ICombinedReducersEntries) => IComponentProps = (state) => {
     return {
-        selectedCalculationItem: state ? state.appReducer.selectedCalculationItem : undefined
+        selectedCalculationItem: state ? state.appReducer.selectedCalculationItem : undefined,
     };
 };
 
@@ -72,15 +73,15 @@ const mapComponentEventsToReduxDispatches: (dispatch: Dispatch<Action<number>>) 
             handlers: {
                 blurSumInput(id: string, event: React.ChangeEvent<HTMLInputElement>): void {
                     const newSum: string = event.currentTarget.value;
-                    dispatch(appActions.changeCalcualtionItemProperty(id, "sum", newSum));
+                    dispatch(Actions.app.changeCalcualtionItemProperty(id, "sum", newSum));
                 },
                 blurAimInput(id: string, event: React.ChangeEvent<HTMLInputElement>): void {
                     const newAim: string = event.currentTarget.value;
-                    dispatch(appActions.changeCalcualtionItemProperty(id, "aim", newAim));
+                    dispatch(Actions.app.changeCalcualtionItemProperty(id, "aim", newAim));
                 },
                 blurAvailableSumInput(event: React.ChangeEvent<HTMLInputElement>): void {
                     const newAvailableSum: string = event.currentTarget.value;
-                    dispatch(appActions.changeCalcualtionAvailableSum(newAvailableSum));
+                    dispatch(Actions.app.changeCalcualtionAvailableSum(newAvailableSum));
                 },
             },
         };

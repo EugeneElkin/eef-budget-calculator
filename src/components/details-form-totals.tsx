@@ -1,7 +1,7 @@
 import React = require("react");
-import { TextInputComponent } from "./reusable/text-input";
-import { ValidationService } from "../services/validation-service";
 import { IValueDescriptor } from "../interfaces/i-value-descriptor";
+import { ValidationService } from "../services/validation-service";
+import { TextInputComponent } from "./reusable/text-input";
 
 interface IComponentState {
     sum: IValueDescriptor<string>;
@@ -24,8 +24,8 @@ export class DetailsFormTotalsComponent extends React.Component<IComponentProps,
 
         this.state = {
             sum: {
-                value: this.props.sum,
                 isValid: true,
+                value: this.props.sum,
             },
         };
     }
@@ -36,8 +36,8 @@ export class DetailsFormTotalsComponent extends React.Component<IComponentProps,
                 <div>
                     <TextInputComponent
                         label={{
+                            nameFor: "availableSum",
                             text: "Available Sum",
-                            nameFor: "availableSum"
                         }}
                         value={this.state.sum.value}
                         isValid={this.state.sum.isValid}
@@ -46,8 +46,8 @@ export class DetailsFormTotalsComponent extends React.Component<IComponentProps,
                     />
                 </div>
             </React.Fragment>
-        )
-    };
+        );
+    }
 
     private handleSumWasChanged(event: React.ChangeEvent<HTMLInputElement>): void {
         const value: string = event.currentTarget.value;

@@ -2,14 +2,14 @@ import { ICalculation } from "../interfaces/i-calculation";
 import { ICalculationItem } from "../interfaces/i-calculation-item";
 
 interface IPaidStatus {
-    id: string,
-    flagStatus: string,
+    id: string;
+    flagStatus: string;
 }
 
 interface IChangingProperty {
-    itemId: string,
-    propName: number,
-    propVal: any
+    itemId: string;
+    propName: number;
+    propVal: any;
 }
 
 export class DataMutationService {
@@ -53,7 +53,6 @@ export class DataMutationService {
             return newCalculation;
         }
         newArr[itemIndex].isPaid = paidStatus.flagStatus ? true : false;
-        console.log(newArr[itemIndex].sum);
         newCalculation.availableSum = paidStatus.flagStatus
             ? +newCalculation.availableSum - newArr[itemIndex].sum
             : +newCalculation.availableSum + newArr[itemIndex].sum;
@@ -68,7 +67,7 @@ export class DataMutationService {
         if (itemIndex === -1) {
             return newCalculation;
         }
-        newArr[itemIndex][changingProperty.propName] = changingProperty.propVal
+        newArr[itemIndex][changingProperty.propName] = changingProperty.propVal;
         newCalculation.items = newArr;
         return newCalculation;
     }

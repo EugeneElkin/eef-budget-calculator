@@ -5,7 +5,7 @@ import { Action, Dispatch } from "redux";
 import { ICalculation } from "../interfaces/i-calculation";
 import { ICalculationItem } from "../interfaces/i-calculation-item";
 import { DataTransferService } from "../services/data-transfer-service";
-import { appActions, loginActions } from "../state/actions";
+import { Actions } from "../state/actions";
 import { ICombinedReducersEntries, showTotalsDetailsItemId } from "../state/reducers";
 import { CalculationNewRowComponent } from "./calculation-new-row";
 import { CalculationRowComponent } from "./calculation-row";
@@ -51,10 +51,10 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
     }
 
     public render() {
-        var formatter = new Intl.NumberFormat("ru-RU", {
-            style: "currency",
+        const formatter: Intl.NumberFormat = new Intl.NumberFormat("ru-RU", {
             currency: "RUB",
             currencyDisplay: "code",
+            style: "currency",
         });
 
         const totalPlannedExpenses: number = this.props.calculation.items
@@ -97,12 +97,12 @@ class CalculationTableComponent extends React.Component<ICalculationComponentDes
                                 handleSwitchPaymentStatusClick={this.props.handlers.clickSwitchPaymentStatus.bind(null, item.id)}
                                 isActive={this.props.activeRowId === item.id}
                                 isDisabled={this.props.isNewRowMode}
-                                handleElementClick={this.props.isNewRowMode ? () => { } : this.props.handlers.clickSelectRow.bind(null, item)}
+                                handleElementClick={this.props.isNewRowMode ? undefined : this.props.handlers.clickSelectRow.bind(null, item)}
                             />,
                         )}
                         <tr
                             className={(this.props.activeRowId === showTotalsDetailsItemId ? "is-active" : undefined)}
-                            onClick={this.props.isNewRowMode ? () => { } : this.props.handlers.clickSelectTotalsRow}
+                            onClick={this.props.isNewRowMode ? undefined : this.props.handlers.clickSelectTotalsRow}
                         >
                             <td>Total</td>
                             <td></td>
@@ -150,39 +150,39 @@ const mapComponentEventsToReduxDispatches: (dispatch: Dispatch<Action<number>>) 
         return {
             handlers: {
                 clickAddNewRow: () => {
-                    dispatch(appActions.enableNewRowMode());
+                    dispatch(Actions.app.enableNewRowMode());
                 },
                 clickCancelCalculationChanges: () => {
-                    dispatch(appActions.cancelCalculationChanges());
+                    dispatch(Actions.app.cancelCalculationChanges());
                 },
                 clickCancelNewRow: () => {
-                    dispatch(appActions.disableNewRowMode());
+                    dispatch(Actions.app.disableNewRowMode());
                 },
                 clickRemoveRow: (id: string, e: React.MouseEvent<HTMLButtonElement>) => {
                     e.stopPropagation();
-                    dispatch(appActions.removeCalculationItem(id));
+                    dispatch(Actions.app.removeCalculationItem(id));
                 },
                 clickSaveCalculation: (calculation: ICalculation) => {
                     DataTransferService.saveCalculation(calculation).then(() => {
-                        dispatch(appActions.saveCalculation(calculation));
+                        dispatch(Actions.app.saveCalculation(calculation));
                     });
                 },
                 clickSaveNewRow: (item: ICalculationItem) => {
-                    dispatch(appActions.addNewCalculationItem(item));
+                    dispatch(Actions.app.addNewCalculationItem(item));
                 },
                 clickSelectRow: (item: ICalculationItem) => {
-                    dispatch(appActions.selectCalculationItem(item));
+                    dispatch(Actions.app.selectCalculationItem(item));
                 },
                 clickSelectTotalsRow: () => {
-                    dispatch(appActions.selectTotalsItem());
+                    dispatch(Actions.app.selectTotalsItem());
                 },
                 clickSwitchPaymentStatus: (id: string, e: React.MouseEvent<HTMLInputElement>) => {
                     e.stopPropagation();
                     const value: boolean | undefined = e.currentTarget ? e.currentTarget.checked : undefined;
-                    dispatch(appActions.switchItemPaymentStatus(id, value));
+                    dispatch(Actions.app.switchItemPaymentStatus(id, value));
                 },
                 saveCalculation: (calculation: ICalculation) => {
-                    dispatch(appActions.saveCalculation(calculation));
+                    dispatch(Actions.app.saveCalculation(calculation));
                 },
             },
         };
