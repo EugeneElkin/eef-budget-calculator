@@ -31,14 +31,10 @@ namespace BudgetCalculationAPI
             services.AddMvc();
             
             // TODO: check that profiler works;
-            services.AddAutoMapper(new Type [] { typeof(AutoMapperProfile) });
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddUserService();
             services.AddTokenService();
-
-            //Mapper.Initialize(cfg => cfg.AddProfile<AutoMapperProfile>());
-
-            Mapper.AssertConfigurationIsValid();
 
             // Configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -84,12 +80,14 @@ namespace BudgetCalculationAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, AutoMapper.IConfigurationProvider autoMapper)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            autoMapper.AssertConfigurationIsValid();
 
             using (var serviceScope = app.ApplicationServices.CreateScope())
             {
