@@ -1,13 +1,14 @@
 ﻿namespace BudgetCalculationAPI.Services
 {
     using AutoMapper;
+    using BudgetCalculationAPI.Models;
+    using DataWorkShop.Entities;
 
     public class AutoMapperProfile: Profile
     {
         public AutoMapperProfile()
         {
-            // TODO: Add mapping here
-            // CreateMap<Foo, FooDto>();
+            CreateMap<NewCalculationViewModel, Calculation>();
         }
     }
 }

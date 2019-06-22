@@ -1,7 +1,6 @@
 ﻿namespace BudgetCalculationAPI.Services
 {
     using System;
-    using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
     using BudgetCalculationAPI.Exceptions;
@@ -34,9 +33,10 @@
         {
             var dbUser = await new ReceivingInstruction<User, string>(
                 this.context,
-                new ReceivingInstructionParams<string>()
+                new ReceivingInstructionParams<User, string>()
                 {
-                    Id = id
+                    Id = id,
+                    FilterExpr = x => x.Status == UserStatusType.Active
                 }
                 ).Execute();
             return dbUser;
@@ -54,10 +54,7 @@
                 throw new CustomException("Password is required");
             }
 
-            var dbUser = (await new ReceivingListInstruction<User>(this.context, new ListInstructionParams<User>
-            {
-                FilterExpr = usr => usr.UserName == userName && usr.Status == UserStatusType.Active
-            }).Execute()).FirstOrDefault();
+            var dbUser = await this.GetById(userName);
 
             // Check user existence
             if (dbUser == null)
