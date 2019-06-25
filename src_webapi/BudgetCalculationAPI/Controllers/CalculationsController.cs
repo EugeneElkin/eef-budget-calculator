@@ -12,6 +12,7 @@
     using EEFApps.ApiInstructions.DataInstructions.Instructions.Structures;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.JsonPatch;
 
     [Authorize]
     [ApiController]
@@ -32,27 +33,28 @@
         [HttpGet]
         public async Task<IActionResult> GetCalculations(string orderByField = null, bool isDescending = false, int? pageSize = null, int? pageAt = null)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                var calculations = (await new ReceivingUserContextedListInstruction<Calculation, string>(this.context,
+                    new ListInstructionParams<Calculation>
+                    {
+                        OrderByField = orderByField,
+                        IsDescending = isDescending,
+                        PageAt = pageAt,
+                        PageSize = pageSize
+                    },
+                    this.User.Identity.Name
+                ).Execute());
+
+                var sanitizedCalculation = this.mapper.Map<IEnumerable<Calculation>, IEnumerable<CalculationViewModel>>(calculations);
+
+                return Ok(sanitizedCalculation);
             }
-
-            var calculations = (await new ReceivingUserContextedListInstruction<Calculation, string>(this.context,
-                new ListInstructionParams<Calculation>
-                {
-                    OrderByField = orderByField,
-                    IsDescending = isDescending,
-                    PageAt = pageAt,
-                    PageSize = pageSize
-                },
-                this.User.Identity.Name
-            ).Execute());
-
-            var sanitizedCalculation = this.mapper.Map<IEnumerable<Calculation>, IEnumerable<CalculationViewModel>>(calculations);
-
-            return Ok(sanitizedCalculation);
+            catch (InstructionException ex)
+            {
+                return StatusCode((int)(ex.httpStatusCode), ex.Message);
+            }
         }
-
 
         // GET api/calculations/5
         [HttpGet("{calculationId}")]
@@ -106,17 +108,57 @@
             }
         }
 
-
-        // PUT api/calculations/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
+        // PATCH api/calculations/5
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchCalcualtion([FromRoute] string id, [FromBody] JsonPatchDocument<Calculation> patchingCalculation)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await new PatchUserContextedInstruction<Calculation, string, string>(
+                    this.context,
+                    new PatchInstructionParams<Calculation, string>
+                    {
+                        Id = id,
+                        DeltaEntity = patchingCalculation
+                    },
+                    this.User.Identity.Name)
+                    .Execute();
+
+                return NoContent();
+            }
+            catch (InstructionException ex)
+            {
+                return StatusCode((int)(ex.httpStatusCode), ex.Message);
+            }
         }
 
         // DELETE api/calculations/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute] string id, string rowVersion)
         {
+            try
+            {
+                await new RemovalOptimizedUserContextedInstruction<Calculation, string, string>(
+                    this.context,
+                    new RemovalInstructionParams<string>()
+                    {
+                        Id = id,
+                        Base64RowVersion = rowVersion
+                    },
+                    this.User.Identity.Name)
+                    .Execute();
+
+                return Ok();
+            }
+            catch (InstructionException ex)
+            {
+                return StatusCode((int)(ex.httpStatusCode), ex.Message);
+            }
         }
     }
 }

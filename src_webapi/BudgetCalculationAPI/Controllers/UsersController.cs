@@ -82,6 +82,8 @@
             }
         }
 
+        // TODO: Add action for Lof Out and ticket release
+
         [AllowAnonymous]
         // POST: api/users/newtoken
         [HttpPost("newtoken")]
