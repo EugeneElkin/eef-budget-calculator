@@ -8,7 +8,12 @@
     {
         public AutoMapperProfile()
         {
-            CreateMap<NewCalculationViewModel, Calculation>();
+            CreateMap<NewCalculationViewModel, Calculation>()
+                .ForMember(dest => dest.Id, opts => opts.Ignore())
+                .ForMember(dest => dest.User, opts => opts.Ignore())
+                .ForMember(dest => dest.UserId, opts => opts.Ignore())
+                .ForMember(dest => dest.Items, opts => opts.Ignore())
+                .ForMember(dest => dest.RowVersion, opts => opts.Ignore());
         }
     }
 }

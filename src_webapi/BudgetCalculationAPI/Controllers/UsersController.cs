@@ -82,7 +82,7 @@
             }
         }
 
-        // TODO: Add action for Lof Out and ticket release
+        // TODO: Add action for Log Out and ticket release
 
         [AllowAnonymous]
         // POST: api/users/newtoken

@@ -6,9 +6,12 @@
     "scripts": {
         "api-compile": "dotnet msbuild ./src_webapi/BudgetCalculationAPI.sln /t:Restore;Rebuild /p:Configuration=Release /p:Platform=\"any cpu\"",
         "api-build": "dotnet publish ./src_webapi/BudgetCalculationAPI/BudgetCalculationAPI.csproj --output=../../.dist_api --configuration=Release",
+        "api-build-server-config": "node ./tools/api-prepare-config.js",
+        "api-run-server": "start iisexpress /config:./.tmp/apihost.config /siteid:1",
+        "api-start": "npm run api-build-server-config && npm run api-run-server",
         "ui-build": "webpack",
-        "web-run-server:dev": "webpack-dev-server",
-        "start": "npm run web-run-server:dev",
+        "ui-run-server:dev": "webpack-dev-server",
+        "ui-start": "npm run web-run-server:dev",
         "test": "echo \"Error: no test specified\" && exit 1",
         "tslint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'"
     },

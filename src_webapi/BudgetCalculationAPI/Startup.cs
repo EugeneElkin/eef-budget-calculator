@@ -29,17 +29,7 @@ namespace BudgetCalculationAPI
         {
             services.AddDbContext<TailoredDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Service"), b => b.MigrationsAssembly("DataWorkShop")));
             services.AddMvc();
-
-
-            //var mappingConfig = new MapperConfiguration(mc =>
-            //{
-            //    mc.AddProfile(new AutoMapperProfile());
-            //});
-
-            //IMapper mapper = mappingConfig.CreateMapper();
-            //services.AddSingleton(mapper);
-
-            // TODO: check that profiler works;
+            
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddUserService();
