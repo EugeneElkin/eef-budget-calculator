@@ -11,7 +11,7 @@
         "api-start": "npm run api-build-server-config && npm run api-run-server",
         "ui-build": "webpack",
         "ui-run-server:dev": "webpack-dev-server",
-        "ui-start": "npm run web-run-server:dev",
+        "ui-start": "npm run ui-run-server:dev",
         "test": "echo \"Error: no test specified\" && exit 1",
         "tslint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'"
     },
@@ -44,7 +44,7 @@
     },
     "dependencies": {
         "@types/uuid": "^3.4.4",
-        "axios": "^0.18.0",
+        "axios": "^0.18.1",
         "react": "^16.2.0",
         "react-dom": "^16.2.0",
         "react-redux": "^5.1.1",
