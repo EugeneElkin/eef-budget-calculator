@@ -1,5 +1,5 @@
 import Axios from "axios";
-import * as React from "react";
+import React from "react";
 
 export interface ILoginComponentStateData {
     login?: string;

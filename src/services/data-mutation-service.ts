@@ -62,8 +62,8 @@ export class DataMutationService {
 
     public static changeCalculationItemProperty(calculation: ICalculation, changingProperty: IChangingProperty): ICalculation {
         const newCalculation = this.cloneCalculation(calculation);
-        const newArr = this.cloneCalculationItems(newCalculation.items);
-        const itemIndex = newArr.findIndex((x) => x.id === changingProperty.itemId);
+        const newArr: ICalculationItem[] = this.cloneCalculationItems(newCalculation.items);
+        const itemIndex: number = newArr.findIndex((x) => x.id === changingProperty.itemId);
         if (itemIndex === -1) {
             return newCalculation;
         }

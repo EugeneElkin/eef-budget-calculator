@@ -1,12 +1,12 @@
+import React from "react";
 import { v4 as uuid } from "uuid";
 
 import { ICalculationItem } from "../interfaces/i-calculation-item";
 import { IValueDescriptor } from "../interfaces/i-value-descriptor";
 import { ValidationService } from "../services/validation-service";
 import { CancelButtonComponent } from "./reusable/cancel-button";
-
-import React = require("react");
 import { TextInputComponent } from "./reusable/text-input";
+
 export interface ICalculationNewRowComponentState {
     plannedSum: IValueDescriptor<string>;
     plannedAim: IValueDescriptor<string>;

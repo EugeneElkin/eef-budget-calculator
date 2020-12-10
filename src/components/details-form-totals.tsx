@@ -1,4 +1,4 @@
-import React = require("react");
+import React from "react";
 import { IValueDescriptor } from "../interfaces/i-value-descriptor";
 import { ValidationService } from "../services/validation-service";
 import { TextInputComponent } from "./reusable/text-input";

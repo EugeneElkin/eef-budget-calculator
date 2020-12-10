@@ -1,54 +1,50 @@
 {
-    "name": "eef-budget-calculator",
-    "version": "1.0.0",
-    "description": "Web app to manage family budget",
-    "main": "index.ts",
-    "scripts": {
-        "api-compile": "dotnet msbuild ./src_webapi/BudgetCalculationAPI.sln /t:Restore;Rebuild /p:Configuration=Release /p:Platform=\"any cpu\"",
-        "api-build": "dotnet publish ./src_webapi/BudgetCalculationAPI/BudgetCalculationAPI.csproj --output=../../.dist_api --configuration=Release",
-        "api-build-server-config": "node ./tools/api-prepare-config.js",
-        "api-run-server": "start iisexpress /config:./.tmp/apihost.config /siteid:1",
-        "api-start": "npm run api-build-server-config && npm run api-run-server",
-        "ui-build": "webpack",
-        "ui-run-server:dev": "webpack-dev-server",
-        "ui-start": "npm run ui-run-server:dev",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "tslint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/EugeneElkin/eef-budget-calculator.git"
-    },
-    "author": "Evgenii Elkin",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/EugeneElkin/eef-budget-calculator/issues"
-    },
-    "homepage": "https://github.com/EugeneElkin/eef-budget-calculator#readme",
-    "devDependencies": {
-        "@types/react": "^16.1.0",
-        "@types/react-dom": "^16.0.4",
-        "@types/react-redux": "^6.0.9",
-        "app-root-path": "^2.1.0",
-        "awesome-typescript-loader": "^5.2.1",
-        "copy-webpack-plugin": "^4.6.0",
-        "css-loader": "^1.0.1",
-        "html-webpack-plugin": "^3.2.0",
-        "source-map-loader": "^0.2.4",
-        "style-loader": "^0.23.1",
-        "tslint": "^5.11.0",
-        "typescript": "^3.1.6",
-        "webpack": "^4.25.1",
-        "webpack-cli": "^3.1.2",
-        "webpack-dev-server": "^3.2.0"
-    },
-    "dependencies": {
-        "@types/uuid": "^3.4.4",
-        "axios": "^0.18.1",
-        "react": "^16.2.0",
-        "react-dom": "^16.2.0",
-        "react-redux": "^5.1.1",
-        "redux": "^4.0.1",
-        "uuid": "^3.3.2"
-    }
+  "name": "eef-budget-calculator",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.6",
+    "@testing-library/react": "^11.2.2",
+    "@testing-library/user-event": "^12.5.0",
+    "@types/jest": "^26.0.18",
+    "@types/node": "^12.19.8",
+    "@types/react": "^16.14.2",
+    "@types/react-dom": "^16.9.10",
+    "@types/react-redux": "^7.1.11",
+    "@types/uuid": "^8.3.0",
+    "axios": "^0.21.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-redux": "^7.2.2",
+    "react-scripts": "4.0.1",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0",
+    "typescript": "^4.1.2",
+    "uuid": "^8.3.2",
+    "web-vitals": "^0.2.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }

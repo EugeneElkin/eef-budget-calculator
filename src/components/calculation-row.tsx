@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { ICalculationItem } from "../interfaces/i-calculation-item";
 
 export interface ICalculationRowComponentProps {

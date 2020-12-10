@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { ButtonComponent, IButtonComponentComponentProps } from "./basic/button";
 
 export class CancelButtonComponent extends React.Component<IButtonComponentComponentProps> {

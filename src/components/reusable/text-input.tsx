@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 export interface ITextInputComponentComponentProps {
     changeHandler?: (event: React.ChangeEvent<HTMLInputElement>) => void;
